@@ -668,7 +668,9 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.viewport.WindowsPhone": [
     "Ext.viewport.WP"
   ],
-  "here.view.Main": []
+  "here.view.Main": [],
+  "here.view.home.HomeContainer": [],
+  "here.view.my.MyContainer": []
 });
 
 Ext.ClassManager.addNameAliasMappings({
@@ -1399,6 +1401,12 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.WindowsPhone": [],
   "here.view.Main": [
     "widget.main"
+  ],
+  "here.view.home.HomeContainer": [
+    "widget.homeContainer"
+  ],
+  "here.view.my.MyContainer": [
+    "widget.myContainer"
   ]
 });
 

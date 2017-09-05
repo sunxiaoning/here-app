@@ -1,2 +1,2 @@
 // @tag full-page
-// @require D:\here\app.js
+// @require D:\here-app\app.js
