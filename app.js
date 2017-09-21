@@ -18,9 +18,7 @@ Ext.application({
     ],
 
     views: [
-        'Main',
-		'home.HomeContainer',
-		'my.MyContainer'
+        'Main'
     ],
 
     icon: {

@@ -32,6 +32,7 @@ Ext.Loader.addClassPathMappings({
   "Ext.device.sqlite.SQLResultSet": "touch/src/device/sqlite/Sencha.js",
   "Ext.device.sqlite.SQLResultSetRowList": "touch/src/device/sqlite/Sencha.js",
   "Ext.device.sqlite.SQLTransaction": "touch/src/device/sqlite/Sencha.js",
+  "app.view.map.Map": "app/view/map/Map.js",
   "here": "app"
 });
 
@@ -667,6 +668,12 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [
     "Ext.viewport.WP"
+  ],
+  "app.view.map.Map": [
+    "map"
+  ],
+  "here.ux.BMap": [
+    "bMap"
   ],
   "here.view.Main": [],
   "here.view.home.HomeContainer": [],
@@ -1399,6 +1406,12 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Ios": [],
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
+  "app.view.map.Map": [
+    "widget.map"
+  ],
+  "here.ux.BMap": [
+    "widget.bMap"
+  ],
   "here.view.Main": [
     "widget.main"
   ],

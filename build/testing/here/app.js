@@ -1,4 +1,4 @@
-function _985b98d3c4f4097e6ac8498429d0eb39fb1e7d6c(){};//@tag foundation,core
+function _9c73ac9c4e1bc9385342e1fb75e8175a8486d557(){};//@tag foundation,core
 //@define Ext
 /**
  * @class Ext
@@ -31339,6 +31339,367 @@ Ext.define('Ext.Ajax', {
 });
 
 /**
+ * Provides a cross browser class for retrieving location information.
+ *
+ * Based on the [Geolocation API Specification](http://dev.w3.org/geo/api/spec-source.html)
+ *
+ * When instantiated, by default this class immediately begins tracking location information,
+ * firing a {@link #locationupdate} event when new location information is available.  To disable this
+ * location tracking (which may be battery intensive on mobile devices), set {@link #autoUpdate} to `false`.
+ *
+ * When this is done, only calls to {@link #updateLocation} will trigger a location retrieval.
+ *
+ * A {@link #locationerror} event is raised when an error occurs retrieving the location, either due to a user
+ * denying the application access to it, or the browser not supporting it.
+ *
+ * The below code shows a GeoLocation making a single retrieval of location information.
+ *
+ *     var geo = Ext.create('Ext.util.Geolocation', {
+ *         autoUpdate: false,
+ *         listeners: {
+ *             locationupdate: function(geo) {
+ *                 alert('New latitude: ' + geo.getLatitude());
+ *             },
+ *             locationerror: function(geo, bTimeout, bPermissionDenied, bLocationUnavailable, message) {
+ *                 if(bTimeout){
+ *                     alert('Timeout occurred.');
+ *                 } else {
+ *                     alert('Error occurred.');
+ *                 }
+ *             }
+ *         }
+ *     });
+ *     geo.updateLocation();
+ */
+Ext.define('Ext.util.Geolocation', {
+    extend: Ext.Evented,
+    alternateClassName: [
+        'Ext.util.GeoLocation'
+    ],
+    config: {
+        /**
+         * @event locationerror
+         * Raised when a location retrieval operation failed.
+         *
+         * In the case of calling updateLocation, this event will be raised only once.
+         *
+         * If {@link #autoUpdate} is set to `true`, this event could be raised repeatedly.
+         * The first error is relative to the moment {@link #autoUpdate} was set to `true`
+         * (or this {@link Ext.util.Geolocation} was initialized with the {@link #autoUpdate} config option set to `true`).
+         * Subsequent errors are relative to the moment when the device determines that it's position has changed.
+         * @param {Ext.util.Geolocation} this
+         * @param {Boolean} timeout
+         * Boolean indicating a timeout occurred
+         * @param {Boolean} permissionDenied
+         * Boolean indicating the user denied the location request
+         * @param {Boolean} locationUnavailable
+         * Boolean indicating that the location of the device could not be determined.
+         * For instance, one or more of the location providers used in the location acquisition
+         * process reported an internal error that caused the process to fail entirely.
+         * @param {String} message An error message describing the details of the error encountered.
+         *
+         * This attribute is primarily intended for debugging and should not be used
+         * directly in an application user interface.
+         */
+        /**
+         * @event locationupdate
+         * Raised when a location retrieval operation has been completed successfully.
+         * @param {Ext.util.Geolocation} this
+         * Retrieve the current location information from the GeoLocation object by using the read-only
+         * properties: {@link #latitude}, {@link #longitude}, {@link #accuracy}, {@link #altitude}, {@link #altitudeAccuracy}, {@link #heading}, and {@link #speed}.
+         */
+        /**
+         * @cfg {Boolean} autoUpdate
+         * When set to `true`, continually monitor the location of the device (beginning immediately)
+         * and fire {@link #locationupdate} and {@link #locationerror} events.
+         */
+        autoUpdate: true,
+        /**
+         * @cfg {Number} frequency
+         * The frequency of each update if {@link #autoUpdate} is set to `true`.
+         */
+        frequency: 10000,
+        /**
+         * Read-only property representing the last retrieved
+         * geographical coordinate specified in degrees.
+         * @type Number
+         * @readonly
+         */
+        latitude: null,
+        /**
+         * Read-only property representing the last retrieved
+         * geographical coordinate specified in degrees.
+         * @type Number
+         * @readonly
+         */
+        longitude: null,
+        /**
+         * Read-only property representing the last retrieved
+         * accuracy level of the latitude and longitude coordinates,
+         * specified in meters.
+         *
+         * This will always be a non-negative number.
+         *
+         * This corresponds to a 95% confidence level.
+         * @type Number
+         * @readonly
+         */
+        accuracy: null,
+        /**
+         * Read-only property representing the last retrieved
+         * height of the position, specified in meters above the ellipsoid
+         * [WGS84](http://dev.w3.org/geo/api/spec-source.html#ref-wgs).
+         * @type Number
+         * @readonly
+         */
+        altitude: null,
+        /**
+         * Read-only property representing the last retrieved
+         * accuracy level of the altitude coordinate, specified in meters.
+         *
+         * If altitude is not null then this will be a non-negative number.
+         * Otherwise this returns `null`.
+         *
+         * This corresponds to a 95% confidence level.
+         * @type Number
+         * @readonly
+         */
+        altitudeAccuracy: null,
+        /**
+         * Read-only property representing the last retrieved
+         * direction of travel of the hosting device,
+         * specified in non-negative degrees between 0 and 359,
+         * counting clockwise relative to the true north.
+         *
+         * If speed is 0 (device is stationary), then this returns `NaN`.
+         * @type Number
+         * @readonly
+         */
+        heading: null,
+        /**
+         * Read-only property representing the last retrieved
+         * current ground speed of the device, specified in meters per second.
+         *
+         * If this feature is unsupported by the device, this returns `null`.
+         *
+         * If the device is stationary, this returns 0,
+         * otherwise it returns a non-negative number.
+         * @type Number
+         * @readonly
+         */
+        speed: null,
+        /**
+         * Read-only property representing when the last retrieved
+         * positioning information was acquired by the device.
+         * @type Date
+         * @readonly
+         */
+        timestamp: null,
+        //PositionOptions interface
+        /**
+         * @cfg {Boolean} allowHighAccuracy
+         * When set to `true`, provide a hint that the application would like to receive
+         * the best possible results. This may result in slower response times or increased power consumption.
+         * The user might also deny this capability, or the device might not be able to provide more accurate
+         * results than if this option was set to `false`.
+         */
+        allowHighAccuracy: false,
+        /**
+         * @cfg {Number} timeout
+         * The maximum number of milliseconds allowed to elapse between a location update operation
+         * and the corresponding {@link #locationupdate} event being raised.  If a location was not successfully
+         * acquired before the given timeout elapses (and no other internal errors have occurred in this interval),
+         * then a {@link #locationerror} event will be raised indicating a timeout as the cause.
+         *
+         * Note that the time that is spent obtaining the user permission is **not** included in the period
+         * covered by the timeout.  The `timeout` attribute only applies to the location acquisition operation.
+         *
+         * In the case of calling `updateLocation`, the {@link #locationerror} event will be raised only once.
+         *
+         * If {@link #autoUpdate} is set to `true`, the {@link #locationerror} event could be raised repeatedly.
+         * The first timeout is relative to the moment {@link #autoUpdate} was set to `true`
+         * (or this {@link Ext.util.Geolocation} was initialized with the {@link #autoUpdate} config option set to `true`).
+         * Subsequent timeouts are relative to the moment when the device determines that it's position has changed.
+         */
+        timeout: Infinity,
+        /**
+         * @cfg {Number} maximumAge
+         * This option indicates that the application is willing to accept cached location information whose age
+         * is no greater than the specified time in milliseconds. If `maximumAge` is set to 0, an attempt to retrieve
+         * new location information is made immediately.
+         *
+         * Setting the `maximumAge` to Infinity returns a cached position regardless of its age.
+         *
+         * If the device does not have cached location information available whose age is no
+         * greater than the specified `maximumAge`, then it must acquire new location information.
+         *
+         * For example, if location information no older than 10 minutes is required, set this property to 600000.
+         */
+        maximumAge: 0,
+        // @private
+        provider: undefined
+    },
+    updateMaximumAge: function() {
+        if (this.watchOperation) {
+            this.updateWatchOperation();
+        }
+    },
+    updateTimeout: function() {
+        if (this.watchOperation) {
+            this.updateWatchOperation();
+        }
+    },
+    updateAllowHighAccuracy: function() {
+        if (this.watchOperation) {
+            this.updateWatchOperation();
+        }
+    },
+    applyProvider: function(config) {
+        if (Ext.feature.has.Geolocation) {
+            if (!config) {
+                if (navigator && navigator.geolocation) {
+                    config = navigator.geolocation;
+                } else if (window.google) {
+                    config = google.gears.factory.create('beta.geolocation');
+                }
+            }
+        } else {
+            this.fireEvent('locationerror', this, false, false, true, 'This device does not support Geolocation.');
+        }
+        return config;
+    },
+    updateAutoUpdate: function(newAutoUpdate, oldAutoUpdate) {
+        var me = this,
+            provider = me.getProvider();
+        if (oldAutoUpdate && provider) {
+            clearInterval(me.watchOperationId);
+            me.watchOperationId = null;
+        }
+        if (newAutoUpdate) {
+            if (!provider) {
+                me.fireEvent('locationerror', me, false, false, true, null);
+                return;
+            }
+            try {
+                me.updateWatchOperation();
+            } catch (e) {
+                me.fireEvent('locationerror', me, false, false, true, e.message);
+            }
+        }
+    },
+    // @private
+    updateWatchOperation: function() {
+        var me = this,
+            provider = me.getProvider();
+        // The native watchPosition method is currently broken in iOS5...
+        if (me.watchOperationId) {
+            clearInterval(me.watchOperationId);
+        }
+        function pollPosition() {
+            provider.getCurrentPosition(Ext.bind(me.fireUpdate, me), Ext.bind(me.fireError, me), me.parseOptions());
+        }
+        pollPosition();
+        me.watchOperationId = setInterval(pollPosition, this.getFrequency());
+    },
+    /**
+     * Executes a onetime location update operation,
+     * raising either a {@link #locationupdate} or {@link #locationerror} event.
+     *
+     * Does not interfere with or restart ongoing location monitoring.
+     * @param {Function} callback
+     * A callback method to be called when the location retrieval has been completed.
+     *
+     * Will be called on both success and failure.
+     *
+     * The method will be passed one parameter, {@link Ext.util.Geolocation}
+     * (**this** reference), set to `null` on failure.
+     *
+     *     geo.updateLocation(function (geo) {
+     *         alert('Latitude: ' + (geo !== null ? geo.latitude : 'failed'));
+     *     });
+     *
+     * @param {Object} [scope]
+     * The scope (**this** reference) in which the handler function is executed.
+     *
+     * **If omitted, defaults to the object which fired the event.**
+     *
+     * <!--positonOptions undocumented param, see W3C spec-->
+     */
+    updateLocation: function(callback, scope, positionOptions) {
+        var me = this,
+            provider = me.getProvider();
+        var failFunction = function(message, error) {
+                if (error) {
+                    me.fireError(error);
+                } else {
+                    me.fireEvent('locationerror', me, false, false, true, message);
+                }
+                if (callback) {
+                    callback.call(scope || me, null, me);
+                }
+            };
+        //last parameter for legacy purposes
+        if (!provider) {
+            failFunction(null);
+            return;
+        }
+        try {
+            provider.getCurrentPosition(//success callback
+            function(position) {
+                me.fireUpdate(position);
+                if (callback) {
+                    callback.call(scope || me, me, me);
+                }
+            }, //last parameter for legacy purposes
+            //error callback
+            function(error) {
+                failFunction(null, error);
+            }, positionOptions || me.parseOptions());
+        } catch (e) {
+            failFunction(e.message);
+        }
+    },
+    // @private
+    fireUpdate: function(position) {
+        var me = this,
+            coords = position.coords;
+        this.position = position;
+        me.setConfig({
+            timestamp: position.timestamp,
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            accuracy: coords.accuracy,
+            altitude: coords.altitude,
+            altitudeAccuracy: coords.altitudeAccuracy,
+            heading: coords.heading,
+            speed: coords.speed
+        });
+        me.fireEvent('locationupdate', me);
+    },
+    // @private
+    fireError: function(error) {
+        var errorCode = error.code;
+        this.fireEvent('locationerror', this, errorCode == error.TIMEOUT, errorCode == error.PERMISSION_DENIED, errorCode == error.POSITION_UNAVAILABLE, error.message == undefined ? null : error.message);
+    },
+    // @private
+    parseOptions: function() {
+        var timeout = this.getTimeout(),
+            ret = {
+                maximumAge: this.getMaximumAge(),
+                enableHighAccuracy: this.getAllowHighAccuracy()
+            };
+        //Google doesn't like Infinity
+        if (timeout !== Infinity) {
+            ret.timeout = timeout;
+        }
+        return ret;
+    },
+    destroy: function() {
+        this.setAutoUpdate(false);
+    }
+});
+
+/**
  * @class Ext.ComponentQuery
  * @extends Object
  * @singleton
@@ -34898,6 +35259,303 @@ Ext.define('Ext.MessageBox', {
         Ext.Msg = new MessageBox();
     });
 });
+
+/**
+ * SegmentedButton is a container for a group of {@link Ext.Button}s. Generally a SegmentedButton would be
+ * a child of a {@link Ext.Toolbar} and would be used to switch between different views.
+ *
+ * ## Example usage:
+ *
+ *     @example
+ *     var segmentedButton = Ext.create('Ext.SegmentedButton', {
+ *         allowMultiple: true,
+ *         items: [
+ *             {
+ *                 text: 'Option 1'
+ *             },
+ *             {
+ *                 text: 'Option 2',
+ *                 pressed: true
+ *             },
+ *             {
+ *                 text: 'Option 3'
+ *             }
+ *         ],
+ *         listeners: {
+ *             toggle: function(container, button, pressed){
+ *                 alert("User toggled the '" + button.getText() + "' button: " + (pressed ? 'on' : 'off'));
+ *             }
+ *         }
+ *     });
+ *     Ext.Viewport.add({ xtype: 'container', padding: 10, items: [segmentedButton] });
+ */
+Ext.define('Ext.SegmentedButton', {
+    extend: Ext.Container,
+    xtype: 'segmentedbutton',
+    config: {
+        /**
+         * @cfg
+         * @inheritdoc
+         */
+        baseCls: Ext.baseCSSPrefix + 'segmentedbutton',
+        /**
+         * @cfg {String} pressedCls
+         * CSS class when a button is in pressed state.
+         * @accessor
+         */
+        pressedCls: Ext.baseCSSPrefix + 'button-pressed',
+        /**
+         * @cfg {Boolean} allowMultiple
+         * Allow multiple pressed buttons.
+         * @accessor
+         */
+        allowMultiple: false,
+        /**
+         * @cfg {Boolean} allowDepress
+         * Allow toggling the pressed state of each button.
+         * Defaults to `true` when {@link #allowMultiple} is `true`.
+         * @accessor
+         */
+        allowDepress: false,
+        /**
+         * @cfg {Boolean} allowToggle Allow child buttons to be pressed when tapped on. Set to `false` to allow tapping but not toggling of the buttons.
+         * @accessor
+         */
+        allowToggle: true,
+        /**
+         * @cfg {Array} pressedButtons
+         * The pressed buttons for this segmented button.
+         *
+         * You can remove all pressed buttons by calling {@link #setPressedButtons} with an empty array.
+         * @accessor
+         */
+        pressedButtons: [],
+        /**
+         * @cfg
+         * @inheritdoc
+         */
+        layout: {
+            type: 'hbox',
+            align: 'stretch'
+        },
+        /**
+         * @cfg
+         * @inheritdoc
+         */
+        defaultType: 'button'
+    },
+    /**
+     * @event toggle
+     * Fires when any child button's pressed state has changed.
+     * @param {Ext.SegmentedButton} this
+     * @param {Ext.Button} button The toggled button.
+     * @param {Boolean} isPressed Boolean to indicate if the button was pressed or not.
+     */
+    initialize: function() {
+        var me = this;
+        me.callParent();
+        me.on({
+            delegate: '> button',
+            scope: me,
+            tap: 'onButtonRelease'
+        });
+        me.onAfter({
+            delegate: '> button',
+            scope: me,
+            hide: 'onButtonHiddenChange',
+            show: 'onButtonHiddenChange'
+        });
+    },
+    updateAllowMultiple: function(allowMultiple) {
+        if (!this.initialized && !this.getInitialConfig().hasOwnProperty('allowDepress') && allowMultiple) {
+            this.setAllowDepress(true);
+        }
+    },
+    /**
+     * We override `initItems` so we can check for the pressed config.
+     */
+    applyItems: function() {
+        var me = this,
+            pressedButtons = [],
+            ln, i, item, items;
+        //call the parent first so the items get converted into a MixedCollection
+        me.callParent(arguments);
+        items = this.getItems();
+        ln = items.length;
+        for (i = 0; i < ln; i++) {
+            item = items.items[i];
+            if (item.getInitialConfig('pressed')) {
+                pressedButtons.push(items.items[i]);
+            }
+        }
+        me.updateFirstAndLastCls(items);
+        me.setPressedButtons(pressedButtons);
+    },
+    /**
+     * Button sets a timeout of 10ms to remove the {@link #pressedCls} on the release event.
+     * We don't want this to happen, so lets return `false` and cancel the event.
+     * @private
+     */
+    onButtonRelease: function(button) {
+        if (!this.getAllowToggle()) {
+            return;
+        }
+        var me = this,
+            pressedButtons = me.getPressedButtons() || [],
+            buttons = [],
+            alreadyPressed;
+        if (!me.getDisabled() && !button.getDisabled()) {
+            //if we allow for multiple pressed buttons, use the existing pressed buttons
+            if (me.getAllowMultiple()) {
+                buttons = pressedButtons.concat(buttons);
+            }
+            alreadyPressed = (buttons.indexOf(button) !== -1) || (pressedButtons.indexOf(button) !== -1);
+            //if we allow for depressing buttons, and the new pressed button is currently pressed, remove it
+            if (alreadyPressed && me.getAllowDepress()) {
+                Ext.Array.remove(buttons, button);
+            } else if (!alreadyPressed || !me.getAllowDepress()) {
+                buttons.push(button);
+            }
+            me.setPressedButtons(buttons);
+        }
+    },
+    onItemAdd: function() {
+        this.callParent(arguments);
+        this.updateFirstAndLastCls(this.getItems());
+    },
+    onItemRemove: function() {
+        this.callParent(arguments);
+        this.updateFirstAndLastCls(this.getItems());
+    },
+    // @private
+    onButtonHiddenChange: function() {
+        this.updateFirstAndLastCls(this.getItems());
+    },
+    // @private
+    updateFirstAndLastCls: function(items) {
+        var ln = items.length,
+            basePrefix = Ext.baseCSSPrefix,
+            firstCls = basePrefix + 'first',
+            lastCls = basePrefix + 'last',
+            item, i;
+        //remove all existing classes
+        for (i = 0; i < ln; i++) {
+            item = items.items[i];
+            item.removeCls(firstCls);
+            item.removeCls(lastCls);
+        }
+        //add a first cls to the first non-hidden button
+        for (i = 0; i < ln; i++) {
+            item = items.items[i];
+            if (!item.isHidden()) {
+                item.addCls(firstCls);
+                break;
+            }
+        }
+        //add a last cls to the last non-hidden button
+        for (i = ln - 1; i >= 0; i--) {
+            item = items.items[i];
+            if (!item.isHidden()) {
+                item.addCls(lastCls);
+                break;
+            }
+        }
+    },
+    /**
+     * @private
+     */
+    applyPressedButtons: function(newButtons) {
+        var me = this,
+            array = [],
+            button, ln, i;
+        if (me.getAllowToggle()) {
+            if (Ext.isArray(newButtons)) {
+                ln = newButtons.length;
+                for (i = 0; i < ln; i++) {
+                    button = me.getComponent(newButtons[i]);
+                    if (button && array.indexOf(button) === -1) {
+                        array.push(button);
+                    }
+                }
+            } else {
+                button = me.getComponent(newButtons);
+                if (button && array.indexOf(button) === -1) {
+                    array.push(button);
+                }
+            }
+        }
+        return array;
+    },
+    /**
+     * Updates the pressed buttons.
+     * @private
+     */
+    updatePressedButtons: function(newButtons, oldButtons) {
+        var me = this,
+            items = me.getItems(),
+            pressedCls = me.getPressedCls(),
+            events = [],
+            item, button, ln, i, e;
+        //loop through existing items and remove the pressed cls from them
+        ln = items.length;
+        if (oldButtons && oldButtons.length) {
+            for (i = 0; i < ln; i++) {
+                item = items.items[i];
+                if (oldButtons.indexOf(item) != -1 && newButtons.indexOf(item) == -1) {
+                    item.removeCls([
+                        pressedCls,
+                        item.getPressedCls()
+                    ]);
+                    events.push({
+                        item: item,
+                        toggle: false
+                    });
+                }
+            }
+        }
+        //loop through the new pressed buttons and add the pressed cls to them
+        ln = newButtons.length;
+        for (i = 0; i < ln; i++) {
+            button = newButtons[i];
+            if (!oldButtons || oldButtons.indexOf(button) == -1) {
+                button.addCls(pressedCls);
+                events.push({
+                    item: button,
+                    toggle: true
+                });
+            }
+        }
+        //loop through each of the events and fire them after a delay
+        ln = events.length;
+        if (ln && oldButtons !== undefined) {
+            Ext.defer(function() {
+                for (i = 0; i < ln; i++) {
+                    e = events[i];
+                    me.fireEvent('toggle', me, e.item, e.toggle);
+                }
+            }, 50);
+        }
+    },
+    /**
+     * Returns `true` if a specified {@link Ext.Button} is pressed.
+     * @param {Ext.Button} button The button to check if pressed.
+     * @return {Boolean} pressed
+     */
+    isPressed: function(button) {
+        var pressedButtons = this.getPressedButtons();
+        return pressedButtons.indexOf(button) != -1;
+    },
+    /**
+     * @private
+     */
+    doSetDisabled: function(disabled) {
+        var me = this;
+        me.items.each(function(item) {
+            item.setDisabled(disabled);
+        }, me);
+        me.callParent(arguments);
+    }
+}, function() {});
 
 /**
  * {@link Ext.TitleBar}'s are most commonly used as a docked item within an {@link Ext.Container}.
@@ -52141,6 +52799,74 @@ Ext.define('Ext.event.recognizer.Tap', {
 });
 
 /**
+ * The Search field creates an HTML5 search input and is usually created inside a form. Because it creates an HTML
+ * search input type, the visual styling of this input is slightly different to normal text input controls (the corners
+ * are rounded), though the virtual keyboard displayed by the operating system is the standard keyboard control.
+ *
+ * As with all other form fields in Sencha Touch, the search field gains a "clear" button that appears whenever there
+ * is text entered into the form, and which removes that text when tapped.
+ *
+ *     @example
+ *     Ext.create('Ext.form.Panel', {
+ *         fullscreen: true,
+ *         items: [
+ *             {
+ *                 xtype: 'fieldset',
+ *                 title: 'Search',
+ *                 items: [
+ *                     {
+ *                         xtype: 'searchfield',
+ *                         label: 'Query',
+ *                         name: 'query'
+ *                     }
+ *                 ]
+ *             }
+ *         ]
+ *     });
+ *
+ * Or on its own, outside of a form:
+ *
+ *     Ext.create('Ext.field.Search', {
+ *         label: 'Search:',
+ *         value: 'query'
+ *     });
+ *
+ * Because search field inherits from {@link Ext.field.Text textfield} it gains all of the functionality that text
+ * fields provide, including getting and setting the value at runtime, validations and various events that are fired
+ * as the user interacts with the component. Check out the {@link Ext.field.Text} docs to see the additional
+ * functionality available.
+ *
+ * For more information regarding forms and fields, please review [Using Forms in Sencha Touch Guide](../../../components/forms.html)
+ */
+Ext.define('Ext.field.Search', {
+    extend: Ext.field.Text,
+    xtype: 'searchfield',
+    alternateClassName: 'Ext.form.Search',
+    config: {
+        /**
+         * @cfg
+         * @inheritdoc
+         */
+        component: {
+            type: 'search'
+        },
+        /**
+         * @cfg
+         * @inheritdoc
+         */
+        ui: 'search'
+    },
+    platformConfig: [
+        {
+            platform: 'blackberry',
+            component: {
+                type: 'text'
+            }
+        }
+    ]
+});
+
+/**
  * @private
  */
 Ext.define('Ext.fx.runner.Css', {
@@ -56038,22 +56764,486 @@ Ext.define('Ext.viewport.Viewport', {
  * you should **not** use {@link Ext#onReady}.
  */
 
+Ext.define('here.ux.BMap', {
+    alternateClassName: 'bMap',
+    extend: Ext.Container,
+    xtype: 'bMap',
+    config: {
+        //私有变量，地图对象
+        map: null,
+        /// <summary>
+        /// 地图初始化配置
+        /// </summary>
+        /// <param name="locate">是否加载定位控件</param>
+        mapOptions: {},
+        //初始配置
+        //中心点，可以是城市名称，也可以是{lng:'',lat:''}格式的坐标数据
+        center: '北京',
+        //是否监听标点的点击事件
+        markerTap: false,
+        //私有变量，定位按钮
+        locate: null,
+        //私有变量，定位控件
+        geo: null,
+        //注意，填充数据需要在showMap事件触发之后才可以
+        //store数据源lng,lat这两个字段必须有
+        store: null,
+        //data数据源，格式为[{lng:'',lat:''}]
+        data: null,
+        //百度服务密钥,没有的话不会进行坐标转换，定位会有一定的误差参考http://developer.baidu.com/map/changeposition.htm
+        ak: null,
+        //lng坐标name
+        lngName: 'lng',
+        //lat坐标name
+        latName: 'lat',
+        //本地搜素关键词
+        key: null,
+        //根据地址直接解析坐标，可以是单个地址，也可以是[{address:'地址'}]数组，可以有其他参数
+        address: null
+    },
+    //初始化
+    initialize: function() {
+        var me = this;
+        me.callParent();
+        //视图绘制完成后再加载百度地图，以免地图加载出错
+        me.on({
+            painted: 'initMap',
+            scope: me
+        });
+    },
+    //初始化地图
+    initMap: function() {
+        var me = this,
+            map = me.getMap();
+        if (!map) {
+            //初始化地图
+            //获取地图初始化配置
+            var mapOptions = me.getMapOptions(),
+                //获取中心点
+                center = me.getCenter(),
+                //获取搜索key
+                key = me.getKey(),
+                //获取地址
+                address = me.getAddress(),
+                //获取数据源
+                store = me.getStore(),
+                point;
+            //创建地图
+            map = new BMap.Map(me.element.dom);
+            //获取中心点
+            if (Ext.isString(center)) {
+                point = center;
+            } else if (Ext.isObject(center)) {
+                point = BMap.Point(center.lng, center.lat);
+            }
+            //设置中心点和地图显示级别
+            map.centerAndZoom(point, 11);
+            //添加地图缩放控件
+            //  map.addControl(new BMap.ZoomControl());
+            //判断是否加载定位控件
+            if (mapOptions.locate) {
+                //加载定位控件
+                map.addControl(me.getLocateControl());
+            }
+            //设置地图对象，方便在其他地方获取到地图对象
+            me.setMap(map);
+            //关键词搜索
+            if (key) {
+                me.search(key);
+            }
+            //地址解析
+            if (address) {
+                me.setMarkerbyAddress(address);
+            }
+            //加载store
+            if (store && store.getCount()) {
+                me.onLoad(store);
+            }
+            //地图加载完毕触发事件
+            me.fireEvent('showMap', me);
+        }
+    },
+    //数据源事件
+    storeEventHooks: {
+        load: 'onLoad'
+    },
+    //填充数据
+    updateData: function(data) {
+        var me = this,
+            store = me.getStore();
+        if (!store) {
+            me.setStore(Ext.create('Ext.data.Store', {
+                data: data,
+                autoDestroy: true
+            }));
+        } else {
+            store.add(data);
+        }
+    },
+    //创建store
+    applyStore: function(store) {
+        var me = this,
+            bindEvents = Ext.apply({}, me.storeEventHooks, {
+                scope: me
+            });
+        //获取store,绑定事件
+        if (store) {
+            store = Ext.data.StoreManager.lookup(store);
+            store.onAfter(bindEvents);
+        }
+        return store;
+    },
+    //更新store
+    updateStore: function(newStore, oldStore) {
+        var me = this,
+            map = me.getMap(),
+            bindEvents = Ext.apply({}, me.storeEventHooks, {
+                scope: me
+            });
+        //移除绑定事件，销毁
+        if (oldStore && Ext.isObject(oldStore) && oldStore.isStore) {
+            oldStore.un(bindEvents);
+            if (oldStore.getAutoDestroy()) {
+                oldStore.destroy();
+            }
+        }
+        if (map && newStore.getCount()) {
+            me.onLoad(newStore);
+        }
+    },
+    //数据加载成功,加载坐标点
+    onLoad: function(store) {
+        var me = this,
+            map = me.getMap(),
+            lngName = me.getLngName(),
+            latName = me.getLatName(),
+            marker, item;
+        map.clearOverlays();
+        store.each(function(record, index, length) {
+            item = record.getData();
+            me.addPoint(item[lngName], item[latName], item, me, map);
+        });
+    },
+    //添加单个点
+    addPoint: function(lng, lat, item, me, map) {
+        if (!me) {
+            me = this;
+        }
+        if (!map) {
+            map = me.getMap();
+        }
+        if (lng && lat) {
+            // 创建标注
+            var marker = new BMap.Marker(new BMap.Point(lng, lat));
+            //其他数据
+            marker.options = {};
+            //将模型中的其他数据添加到按钮中
+            for (var name in item) {
+                marker.options[name] = item[name];
+            }
+            if (me.getMarkerTap()) {
+                //添加点击监听
+                marker.addEventListener("click", function(type, target) {
+                    me.fireAction('tapMarker', [
+                        me,
+                        this
+                    ], 'onTapMarker');
+                });
+            }
+            // 将标注添加到地图中
+            map.addOverlay(marker);
+        }
+    },
+    //获取定位控件
+    getLocateControl: function() {
+        //创建控件
+        var locateControl = new BMap.Control();
+        //设置方位
+        locateControl.defaultAnchor = BMAP_ANCHOR_BOTTOM_LEFT;
+        //设置坐标
+        locateControl.defaultOffset = new BMap.Size(10, 70);
+        //设置dom
+        locateControl.initialize = function(map) {
+            var zoom = document.createElement("div");
+            zoom.className = 'BMap_ZoomCtrl zoom_btn locateControl';
+            var location = document.createElement("div");
+            location.className = 'location';
+            zoom.appendChild(location);
+            map.getContainer().appendChild(zoom);
+            return zoom;
+        };
+        //监听点击事件
+        this.element.on({
+            tap: 'onLocate',
+            delegate: 'div.locateControl',
+            scope: this
+        });
+        return locateControl;
+    },
+    //点击定位按钮
+    onLocate: function(e) {
+        var el = e.getTarget('div.location', null, true);
+        el.addCls('locationGif');
+        this.setLocate(el);
+        //触发定位事件
+        this.setGeo(true);
+    },
+    //创建定位插件
+    applyGeo: function(config) {
+        return Ext.factory(config, Ext.util.Geolocation, this.getGeo());
+    },
+    //更新定位插件
+    updateGeo: function(newGeo, oldGeo) {
+        var events = {
+                locationupdate: 'onGeoUpdate',
+                locationerror: 'onGeoError',
+                scope: this
+            };
+        if (oldGeo) {
+            oldGeo.un(events);
+        }
+        if (newGeo) {
+            newGeo.on(events);
+            newGeo.updateLocation();
+        }
+    },
+    // 定位成功，设置中心点
+    onGeoUpdate: function(geo) {
+        var me = this,
+            ak = me.getAk();
+        if (ak) {
+            Ext.Ajax.request({
+                url: 'http://api.map.baidu.com/geoconv/v1/?',
+                params: {
+                    coords: geo.getLongitude() + ',' + geo.getLatitude(),
+                    ak: ak
+                },
+                scope: me,
+                success: function(data) {
+                    data = Ext.decode(data.responseText).result[0];
+                    if (data) {
+                        me.addMyPoint(data.x, data.y);
+                    }
+                }
+            });
+        } else {
+            me.addMyPoint(geo.getLongitude(), geo.getLatitude());
+        }
+    },
+    //添加我的坐标
+    addMyPoint: function(lng, lat) {
+        var me = this,
+            map = me.getMap(),
+            icon = new BMap.Icon("resources/icons/markers.png", new BMap.Size(25, 25), {
+                imageOffset: new BMap.Size(0, 0)
+            }),
+            point = new BMap.Point(lng, lat),
+            marker = new BMap.Marker(point, {
+                icon: icon
+            });
+        // 将标注添加到地图中
+        map.addOverlay(marker);
+        map.setCenter(point);
+        me.unLocate();
+    },
+    // 定位失败
+    onGeoError: function() {
+        this.unLocate();
+        //触发事件
+        this.fireEvent('geoError', this);
+    },
+    //取消定位动画
+    unLocate: function() {
+        var locate = this.getLocate();
+        if (locate) {
+            locate.removeCls('locationGif');
+        }
+    },
+    //更新搜索关键词
+    updateKey: function(value) {
+        var me = this,
+            map = me.getMap();
+        if (map && value) {
+            me.search(value);
+        }
+    },
+    /// <summary>
+    /// 搜索
+    /// </summary>
+    /// <param name="key">关键词：String|Array<String></param>
+    /// <param name="unClear">是否不清除覆盖物</param>
+    search: function(key, unClear) {
+        var map = this.getMap();
+        !unClear && map.clearOverlays();
+        var local = new BMap.LocalSearch(map, {
+                renderOptions: {
+                    map: map,
+                    autoViewport: true
+                }
+            });
+        local.setSearchCompleteCallback(function(bo) {
+            console.log(bo);
+            if (bo._currentNumPois == 0) {
+                Ext.toast('请输入正确的检索条件！');
+            }
+        });
+        local.search(key);
+    },
+    /// <summary>
+    /// 根据中心点与检索词发起周边检索
+    /// </summary>
+    /// <param name="key">关键词：String|Array<String></param>
+    /// <param name="by">中心点：LocalResultPoi|String|Point</param>
+    /// <param name="unClear">是否不清除覆盖物</param>
+    searchNearby: function(key, by, unClear) {
+        var map = this.getMap();
+        !unClear && map.clearOverlays();
+        var local = new BMap.LocalSearch(map, {
+                renderOptions: {
+                    map: map,
+                    autoViewport: true
+                }
+            });
+        local.searchNearby(key, by);
+    },
+    /// <summary>
+    /// 设置地图中心
+    /// </summary>
+    /// <param name="point"></param>
+    setMapCenter: function(lng, lat) {
+        var map = this.getMap();
+        if (map) {
+            map.setCenter(new BMap.Point(lng, lat));
+        }
+    },
+    //更新地址
+    setMarkerbyAddress: function(address) {
+        var me = this;
+        if (address) {
+            if (Ext.isArray(address)) {
+                for (var i = 0; i < address.length; i++) {
+                    me.getMarkerbyAddress(address[i].address, address[i]);
+                }
+            } else if (Ext.isString(address)) {
+                me.getMarkerbyAddress(address);
+            }
+        }
+    },
+    //根据地址解析坐标
+    getMarkerbyAddress: function(address, params) {
+        var me = this,
+            ak = me.getAk();
+        if (ak) {
+            Ext.Ajax.request({
+                url: 'http://api.map.baidu.com/geocoder/v2/?',
+                myParams: params,
+                params: {
+                    address: address,
+                    ak: ak,
+                    output: 'json'
+                },
+                scope: me,
+                success: function(data) {
+                    var response = Ext.decode(data.responseText),
+                        location;
+                    if (response.status == 0) {
+                        location = response.result.location;
+                        me.addPoint(location.lng, location.lat, data.request.options.myParams);
+                    } else {
+                        if (!params) {
+                            Ext.toast('请输入正确的检索条件！');
+                        }
+                    }
+                }
+            });
+        } else {
+            Ext.Logger.error('请设置百度服务ak！');
+        }
+    }
+});
+
+Ext.define('app.view.map.Map', {
+    alternateClassName: 'map',
+    extend: here.ux.BMap,
+    xtype: 'map',
+    config: {
+        title: '地图',
+        /// <summary>
+        /// 地图配置
+        /// </summary>
+        /// <param name="locate">是否加载定位控件</param>
+        mapOptions: {
+            locate: true
+        },
+        data: [
+            {
+                lng: '116.404',
+                lat: '39.915',
+                name: '天安门'
+            },
+            {
+                lng: '116.1',
+                lat: '39.915',
+                name: '地安门'
+            }
+        ],
+        //是否监听标点的点击事件
+        markerTap: true
+    },
+    //点击坐标处理
+    onTapMarker: function(me, marker) {
+        //创建信息窗口
+        var infoWindow = new BMap.InfoWindow(marker.options.name);
+        marker.openInfoWindow(infoWindow);
+    }
+});
+
 Ext.define('here.view.home.HomeContainer', {
     extend: Ext.tab.Panel,
     xtype: 'homeContainer',
-    title: '首页',
-    iconCls: 'home',
-    items: [
-        {
-            title: '最新发布'
-        },
-        {
-            title: '我的关注'
-        },
-        {
-            title: '我的发布'
-        }
-    ]
+    config: {
+        title: '首页',
+        iconCls: 'home',
+        items: [
+            {
+                title: '最新发布',
+                items: [
+                    {
+                        xtype: 'toolbar',
+                        docked: 'top',
+                        items: [
+                            {
+                                xtype: 'segmentedbutton',
+                                centered: true,
+                                items: [
+                                    {
+                                        text: '位置视图',
+                                        pressed: true
+                                    },
+                                    {
+                                        text: '信息视图'
+                                    }
+                                ],
+                                listeners: {
+                                    toggle: function(container, button, pressed) {
+                                        if (pressed) {} else {}
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'map'
+                    },
+                    {
+                        xtype: 'panel',
+                        html: '信息视图',
+                        hidden: true
+                    }
+                ]
+            }
+        ]
+    }
 });
 
 Ext.define('here.view.my.MyContainer', {
@@ -56068,21 +57258,48 @@ Ext.define('here.view.my.MyContainer', {
 });
 
 Ext.define('here.view.Main', {
-    extend: Ext.tab.Panel,
+    extend: Ext.Panel,
     xtype: 'main',
     config: {
-        tabBarPosition: 'bottom',
+        layout: {
+            type: 'card'
+        },
         items: [
             {
-                xclass: 'here.view.home.HomeContainer'
+                xtype: 'toolbar',
+                docked: 'top',
+                items: [
+                    {
+                        border: 0,
+                        iconCls: 'locate',
+                        style: 'background:none',
+                        html: 'Here'
+                    },
+                    {
+                        xtype: 'spacer'
+                    },
+                    {
+                        xtype: 'searchfield',
+                        placeholder: '搜索'
+                    }
+                ]
             },
             {
-                xtype: 'button',
-                text: '发布',
-                iconCls: 'compose'
-            },
-            {
-                xclass: 'here.view.my.MyContainer'
+                xtype: 'tabpanel',
+                tabBarPosition: 'bottom',
+                items: [
+                    {
+                        xclass: 'here.view.home.HomeContainer'
+                    },
+                    {
+                        xtype: 'button',
+                        title: '发布',
+                        iconCls: 'compose'
+                    },
+                    {
+                        xclass: 'here.view.my.MyContainer'
+                    }
+                ]
             }
         ]
     }
@@ -56102,9 +57319,7 @@ Ext.define('here.view.Main', {
 Ext.application({
     name: 'here',
     views: [
-        'Main',
-        'home.HomeContainer',
-        'my.MyContainer'
+        'Main'
     ],
     icon: {
         '57': 'resources/icons/Icon.png',
@@ -56137,5 +57352,5 @@ Ext.application({
 });
 
 // @tag full-page
-// @require D:\here-app\app.js
+// @require D:\projects\here\app.js
 
