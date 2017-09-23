@@ -2,7 +2,7 @@ Ext.define('here.view.home.HomeContainer',{
 	extend: 'Ext.tab.Panel',
 	xtype : 'homeContainer',
 	requires: [
-		'here.view.map.Map'
+		'here.view.map.Map','Ext.util.DelayedTask'
 	],
 	config: {
 		title : '首页',
@@ -29,6 +29,14 @@ Ext.define('here.view.home.HomeContainer',{
 									toggle: function(container, button, pressed){
 										if(pressed){
 											
+											if(button.getText() == '位置视图'){
+
+												
+												
+												
+												
+												
+											}
 										}
 										else {
 											

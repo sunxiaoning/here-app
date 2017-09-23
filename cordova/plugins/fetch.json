@@ -1,0 +1,29 @@
+{
+    "cordova-plugin-whitelist": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-whitelist@1"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-baidumaplocation": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-baidumaplocation@3.2.0"
+        },
+        "is_top_level": true,
+        "variables": {
+            "ANDROID_KEY": "3QpEGgAHh81vHVWWq6yaZmnabGNhc9FE",
+            "IOS_KEY": "<API_KEY_IOS>"
+        }
+    },
+    "cordova-plugin-network-information": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-network-information"
+        },
+        "is_top_level": true,
+        "variables": {}
+    }
+}

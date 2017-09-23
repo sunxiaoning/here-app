@@ -2,7 +2,7 @@ Ext.define('here.ux.BMap', {
     alternateClassName: 'bMap',
     extend: 'Ext.Container',
     xtype: 'bMap',
-    requires: ['Ext.util.Geolocation'],
+    requires: ['Ext.util.Geolocation','Ext.Toast'],
     config: {
         //私有变量，地图对象
         map: null,
@@ -69,10 +69,10 @@ Ext.define('here.ux.BMap', {
             if (Ext.isString(center)) {
                 point = center;
             } else if (Ext.isObject(center)) {
-                point = BMap.Point(center.lng, center.lat);
+                point = new BMap.Point(center.lng, center.lat);
             }
             //设置中心点和地图显示级别
-            map.centerAndZoom(point, 11);
+            map.centerAndZoom(point, 15);
             //添加地图缩放控件
             // map.addControl(new BMap.ZoomControl());
             //判断是否加载定位控件
@@ -193,37 +193,36 @@ Ext.define('here.ux.BMap', {
     },
     //获取定位控件
     getLocateControl: function () {
-        //创建控件
-        var locateControl = new BMap.Control();
-        //设置方位
-        locateControl.defaultAnchor = BMAP_ANCHOR_BOTTOM_LEFT;
-        //设置坐标
-        locateControl.defaultOffset = new BMap.Size(10, 70);
-        //设置dom
-        locateControl.initialize = function (map) {
-            var zoom = document.createElement("div");
-            zoom.className = 'BMap_ZoomCtrl zoom_btn locateControl';
-            var location = document.createElement("div");
-            location.className = 'location';
-            zoom.appendChild(location);
-            map.getContainer().appendChild(zoom);
-            return zoom;
-        }
-        //监听点击事件
-        this.element.on({
-            tap: 'onLocate',
-            delegate: 'div.locateControl',
-            scope: this
-        });
-        return locateControl;
+
+        // 添加定位控件
+        var geolocationControl = new BMap.GeolocationControl();
+        geolocationControl.addEventListener("locationSuccess", this.onLocate);
+        geolocationControl.addEventListener("locationError", this.onLocate);
+        return geolocationControl;
     },
     //点击定位按钮
     onLocate: function (e) {
-        var el = e.getTarget('div.location', null, true);
-        el.addCls('locationGif');
-        this.setLocate(el);
-        //触发定位事件
-        this.setGeo(true);
+
+        // 使用百度地图SDK定位
+        if(baidumap_location){
+            
+            
+            // 进行定位 
+            baidumap_location.getCurrentPosition(function (result) {
+                me.addMyPoint(result.longitude, result.latitude);				
+            }, function (error) {
+                Ext.toast(
+                    {
+                        message: '定位失败!',
+                        timeout: 2000,
+                        docked : 'bottom'
+                    }
+                );
+            });
+        }
+        else {
+           
+        }
     },
     //创建定位插件
     applyGeo: function (config) {
@@ -282,7 +281,7 @@ Ext.define('here.ux.BMap', {
         });
         // 将标注添加到地图中
         map.addOverlay(marker);
-        map.setCenter(point);
+        map.centerAndZoom(point,15);
         me.unLocate();
     },
     // 定位失败
