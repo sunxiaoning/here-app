@@ -73,15 +73,10 @@ Ext.define('here.ux.BMap', {
             }
             //设置中心点和地图显示级别
             map.centerAndZoom(point, 15);
-            //添加地图缩放控件
-            // map.addControl(new BMap.ZoomControl());
-            //判断是否加载定位控件
-            if (mapOptions.locate) {
-                //加载定位控件
-                map.addControl(me.getLocateControl());
-            }
+            
             //设置地图对象，方便在其他地方获取到地图对象
             me.setMap(map);
+            
             //关键词搜索
             if (key) {
                 me.search(key);
@@ -94,6 +89,15 @@ Ext.define('here.ux.BMap', {
             if (store&&store.getCount()) {
                 me.onLoad(store);
             }
+
+            //判断是否加载定位控件
+            if (mapOptions.locate) {
+                //加载定位控件
+                map.addControl(me.getLocateControl());
+            }
+
+            // 添加我的位置标注
+            me.addMyPoint(me.getCenter().lng, me.getCenter().lat);	
             
             //地图加载完毕触发事件
             me.fireEvent('showMap', me);
@@ -191,37 +195,66 @@ Ext.define('here.ux.BMap', {
             map.addOverlay(marker);
         }
     },
+    
     //获取定位控件
     getLocateControl: function () {
+        var me = this;
+        var map = me.getMap();
 
-        // 添加定位控件
-        var geolocationControl = new BMap.GeolocationControl();
-        geolocationControl.addEventListener("locationSuccess", this.onLocate);
-        geolocationControl.addEventListener("locationError", this.onLocate);
-        return geolocationControl;
+        // 自定义定位控件
+        function LocateControl(){
+            // 默认停靠位置和偏移量
+            this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT;
+            this.defaultOffset = new BMap.Size(10, 10);
+        }
+        LocateControl.prototype = new BMap.Control();
+        LocateControl.prototype.initialize = function(map){
+            var div = document.createElement("div");
+            var image = document.createElement('input');   
+            image.type = "image";
+            image.src = "resources/map/locateControl.png";
+            image.style.outline = "none";
+            image.style.width = "32px";
+            image.style.height = "32px";
+            div.appendChild(image);
+            
+            // 绑定事件,点击定位
+            div.onclick = function(e){
+                setTimeout(Ext.bind(me.onLocate(map),me),2000);
+            }
+            map.getContainer().appendChild(div);
+            return div;
+        }
+        return new LocateControl();
     },
     //点击定位按钮
-    onLocate: function (e) {
+    onLocate: function () {
+        var me = this;
+        var map = me.getMap();
 
         // 使用百度地图SDK定位
-        if(baidumap_location){
+        if(typeof(baidumap_location) != 'undefined'){
             
             
             // 进行定位 
             baidumap_location.getCurrentPosition(function (result) {
-                me.addMyPoint(result.longitude, result.latitude);				
+                var myLocation = new BMap.Point(result.longitude, result.latitude);
+
+                // 移动地图到我的位置
+                map.panTo(myLocation);
+
+                // 添加我的位置标注
+                me.addMyPoint(result.longitude, result.latitude);
+
             }, function (error) {
                 Ext.toast(
                     {
                         message: '定位失败!',
-                        timeout: 2000,
-                        docked : 'bottom'
+                        timeout: 200,
+                        docked : 'top'
                     }
                 );
             });
-        }
-        else {
-           
         }
     },
     //创建定位插件
@@ -270,32 +303,21 @@ Ext.define('here.ux.BMap', {
     },
     //添加我的坐标
     addMyPoint: function (lng, lat) {
-        var me = this,
-        map = me.getMap(),
-        icon = new BMap.Icon("resources/icons/markers.png", new BMap.Size(25, 25), {
-            imageOffset: new BMap.Size(0, 0)
-        }),
-        point = new BMap.Point(lng, lat),
-        marker = new BMap.Marker(point, {
-            icon: icon
-        });
+        var me = this;
+        var map = me.getMap();
+        var point = new BMap.Point(lng, lat);
+      
+        var myIcon = new BMap.Icon("resources/map/myLocation.gif", new BMap.Size(33,36));
+        var marker = new BMap.Marker(point,{icon:myIcon});  
         // 将标注添加到地图中
         map.addOverlay(marker);
         map.centerAndZoom(point,15);
-        me.unLocate();
     },
     // 定位失败
     onGeoError: function () {
         this.unLocate();
         //触发事件
         this.fireEvent('geoError', this);
-    },
-    //取消定位动画
-    unLocate: function () {
-        var locate = this.getLocate();
-        if (locate) {
-            locate.removeCls('locationGif');
-        }
     },
     //更新搜索关键词
     updateKey: function (value) {

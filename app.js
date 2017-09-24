@@ -45,17 +45,54 @@ Ext.application({
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('here.view.Main'));
+
+        Ext.Viewport.addAfterListener('painted', function(){
+            var me = this;
+
+            if(navigator.connection.type == Connection.NONE){
+               
+                // 用户提示
+                Ext.toast(
+                    {
+                        message: "网络已断开,请连接网络！",
+                        docked : 'top',
+                        timeout: 200
+                    }
+                );
+            }
+
+            // 监听网络状态
+            document.addEventListener("offline", Ext.bind(me.onOffline,me), false);
+            document.addEventListener("online", Ext.bind(me.onOnline,me), false);
+        }, this);
     },
 
-    onUpdated: function() {
-        Ext.Msg.confirm(
-            "Application Update",
-            "This application has just successfully been updated to the latest version. Reload now?",
-            function(buttonId) {
-                if (buttonId === 'yes') {
-                    window.location.reload();
-                }
+    onOffline : function(){
+        var me = this;
+
+        // 用户提示
+        Ext.toast(
+            {
+                message: "网络已断开,请连接网络！",
+                timeout: 200,
+                docked : 'top'
             }
         );
+    },
+    onOnline : function(){
+        var me = this;
+        
+        // 用户提示
+        Ext.toast(
+            {
+                message: "网络已连接！",
+                timeout: 200,
+                docked : 'top'
+            }
+        );
+        me.restartView();
+    },
+    restartView : function(){
+        window.location.reload();
     }
 });

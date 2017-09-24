@@ -120,7 +120,8 @@
     "resources": [
         "resources/images",
         "resources/icons",
-        "resources/startup"
+        "resources/startup",
+        "resources/map"
     ],
 
     /**

@@ -11,9 +11,9 @@ Ext.define('here.view.map.Map', {
         /// 地图配置
         /// </summary>
         /// <param name="locate">是否加载定位控件</param>
-        // mapOptions: {
-            //locate: false
-        // },
+        mapOptions: {
+            locate: true
+         },
         //是否监听标点的点击事件
         markerTap: true,
         locationFinish : false
@@ -38,15 +38,14 @@ Ext.define('here.view.map.Map', {
                     lng:result.longitude,
                     lat:result.latitude
                 };
-                me.setCenter(myLocation);
-                markData.push(myLocation);
-                me.setData(markData);              
+                me.setCenter(myLocation);      
             }, function (error) {
                 me.setLocationFinish(true);       
                 Ext.toast(
                     {
                         message: '定位失败!',
-                        timeout: 2000
+                        timeout: 200,
+                        docked : 'top'
                     }
                 );    
             },[{
@@ -70,7 +69,7 @@ Ext.define('here.view.map.Map', {
                 while(true){
                     
                     // 定位成功，或定位超时
-                    if(me.getLocationFinish() || waitedTime > 3000){
+                    if(me.getLocationFinish() || waitedTime > 1000){
                         break;
                     }
                     else {
@@ -92,9 +91,10 @@ Ext.define('here.view.map.Map', {
                 lat:34.8017770000
             };
             me.setCenter(myLocation);
-            markData.push(myLocation);
-            me.setData(markData);
+           // markData.push(myLocation);
+            // me.setData(markData);
             me.callParent();
+           
         }
         
         

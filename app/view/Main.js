@@ -9,6 +9,7 @@ Ext.define('here.view.Main', {
 			{
 				xtype : 'toolbar',
 				docked: 'top',
+
 				items : [
 					{
 						border : 0,
