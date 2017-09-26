@@ -240,9 +240,6 @@ Ext.define('here.ux.BMap', {
             baidumap_location.getCurrentPosition(function (result) {
                 var myLocation = new BMap.Point(result.longitude, result.latitude);
 
-                // 移动地图到我的位置
-                map.panTo(myLocation);
-
                 // 添加我的位置标注
                 me.addMyPoint(result.longitude, result.latitude);
 
