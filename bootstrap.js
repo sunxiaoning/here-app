@@ -657,11 +657,13 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.viewport.WindowsPhone": [
     "Ext.viewport.WP"
   ],
+  "here.controller.home.LatestViewController": [],
   "here.ux.BMap": [
     "bMap"
   ],
   "here.view.Main": [],
   "here.view.home.HomeContainer": [],
+  "here.view.home.LatestView": [],
   "here.view.map.Map": [
     "map"
   ],
@@ -1383,6 +1385,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Ios": [],
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
+  "here.controller.home.LatestViewController": [],
   "here.ux.BMap": [
     "widget.bMap"
   ],
@@ -1391,6 +1394,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "here.view.home.HomeContainer": [
     "widget.homeContainer"
+  ],
+  "here.view.home.LatestView": [
+    "widget.latestView"
   ],
   "here.view.map.Map": [
     "widget.map"

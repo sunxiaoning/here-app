@@ -16,7 +16,13 @@ Ext.define('here.view.map.Map', {
          },
         //是否监听标点的点击事件
         markerTap: true,
-        locationFinish : false
+        locationFinish : false,
+        data: [
+                    { lng: '121.538089', lat: '31.22488', name: '上海东昌' }, 
+                    { lng: '121.540577', lat: '31.224127', name: '信用保险' },
+                    { lng: '121.538784', lat: '31.223483', name: '上海乐赚' },
+                    { lng: '121.539494', lat: '31.222437', name: '上海浦东银行' }
+              ],
     },
     //点击坐标处理
     onTapMarker: function (me, marker) {

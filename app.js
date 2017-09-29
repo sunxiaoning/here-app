@@ -18,7 +18,15 @@ Ext.application({
     ],
 
     views: [
-        'Main'
+        'Main',
+        'Main',
+        'home.HomeContainer',
+        'home.LatestView',
+        'map.Map',
+        'my.MyContainer'
+    ],
+    controllers: [
+        'home.LatestViewController'
     ],
 
     icon: {
