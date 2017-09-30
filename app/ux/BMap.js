@@ -34,7 +34,8 @@ Ext.define('here.ux.BMap', {
         //本地搜素关键词
         key: null,
         //根据地址直接解析坐标，可以是单个地址，也可以是[{address:'地址'}]数组，可以有其他参数
-        address: null
+        address: null,
+        completeLocate : true
     },
     //初始化
     initialize: function () {
@@ -220,7 +221,12 @@ Ext.define('here.ux.BMap', {
             
             // 绑定事件,点击定位
             div.onclick = function(e){
-                setTimeout(Ext.bind(me.onLocate(map),me),2000);
+                var div = this;
+                div.style.display = "none";
+                setTimeout(function(){
+                    div.style.display = "";
+                },2000);
+                setTimeout(Ext.bind(me.onLocate(map),me),500);
             }
             map.getContainer().appendChild(div);
             return div;
@@ -242,7 +248,6 @@ Ext.define('here.ux.BMap', {
 
                 // 添加我的位置标注
                 me.addMyPoint(result.longitude, result.latitude);
-
             }, function (error) {
                 Ext.toast(
                     {
