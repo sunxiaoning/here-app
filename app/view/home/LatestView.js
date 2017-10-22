@@ -2,7 +2,8 @@ Ext.define('here.view.home.LatestView', {
     extend: 'Ext.Panel',
 	xtype: 'latestView',
 	requires : [
-		'Ext.SegmentedButton'
+		'Ext.SegmentedButton',
+		'here.view.home.InfoListView'
 	],
 	config : {
 			title : '最新发布',
@@ -13,6 +14,12 @@ Ext.define('here.view.home.LatestView', {
 					layout : 'fit',
 					docked: 'top',
 					items : [
+						/*({
+							border : 0,
+							iconCls : 'locate',
+							style: 'background:none',
+							html:'Here'
+						},*/		
 						{
 							xtype: 'segmentedbutton',
 							id : 'toggleButton',
@@ -28,7 +35,7 @@ Ext.define('here.view.home.LatestView', {
 									text: '信息视图'
 								}
 							]
-						}
+						},
 					]
 					},
 					{
@@ -37,8 +44,7 @@ Ext.define('here.view.home.LatestView', {
 					},
 					{
 						id: 'infoListView',
-						xtype : 'panel',
-						html : '信息视图',
+						xtype : 'infoListView',
 						hidden : true
 					}
 			]
