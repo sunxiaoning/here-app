@@ -22,11 +22,15 @@ Ext.application({
         'Main',
         'home.HomeContainer',
         'home.LatestView',
+        'home.InfoListView',
+        'home.InfoDetail',
+        'publish.FirstView',
         'map.Map',
         'my.MyContainer'
     ],
     controllers: [
-        'home.LatestViewController'
+        'home.LatestViewController',
+        'publish.ContentPublishController'
     ],
 
     icon: {
@@ -52,7 +56,9 @@ Ext.application({
         Ext.fly('appLoadingIndicator').destroy();
 
         // Initialize the main view
-        Ext.Viewport.add(Ext.create('here.view.Main'));
+        Ext.Viewport.add(Ext.create('here.view.Main',{
+            id : 'mainView'
+        }));
 
         Ext.Viewport.addAfterListener('painted', function(){
             var me = this;
