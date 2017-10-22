@@ -658,16 +658,20 @@ Ext.ClassManager.addNameAlternateMappings({
     "Ext.viewport.WP"
   ],
   "here.controller.home.LatestViewController": [],
+  "here.controller.publish.ContentPublishController": [],
   "here.ux.BMap": [
     "bMap"
   ],
   "here.view.Main": [],
   "here.view.home.HomeContainer": [],
+  "here.view.home.InfoDetail": [],
+  "here.view.home.InfoListView": [],
   "here.view.home.LatestView": [],
   "here.view.map.Map": [
     "map"
   ],
-  "here.view.my.MyContainer": []
+  "here.view.my.MyContainer": [],
+  "here.view.publish.FirstView": []
 });
 
 Ext.ClassManager.addNameAliasMappings({
@@ -1386,6 +1390,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
   "here.controller.home.LatestViewController": [],
+  "here.controller.publish.ContentPublishController": [],
   "here.ux.BMap": [
     "widget.bMap"
   ],
@@ -1395,6 +1400,12 @@ Ext.ClassManager.addNameAliasMappings({
   "here.view.home.HomeContainer": [
     "widget.homeContainer"
   ],
+  "here.view.home.InfoDetail": [
+    "widget.infoDetail"
+  ],
+  "here.view.home.InfoListView": [
+    "widget.infoListView"
+  ],
   "here.view.home.LatestView": [
     "widget.latestView"
   ],
@@ -1403,7 +1414,8 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "here.view.my.MyContainer": [
     "widget.myContainer"
-  ]
+  ],
+  "here.view.publish.FirstView": []
 });
 
 
