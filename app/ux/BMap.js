@@ -35,7 +35,7 @@ Ext.define('here.ux.BMap', {
         key: null,
         //根据地址直接解析坐标，可以是单个地址，也可以是[{address:'地址'}]数组，可以有其他参数
         address: null,
-        completeLocate : true
+        myLocationMarker:null
     },
     //初始化
     initialize: function () {
@@ -312,7 +312,11 @@ Ext.define('here.ux.BMap', {
         var myIcon = new BMap.Icon("resources/map/myLocation.gif", new BMap.Size(33,36));
         var marker = new BMap.Marker(point,{icon:myIcon});  
         // 将标注添加到地图中
+        if(me.getMyLocationMarker() != null){
+            map.removeOverlay(me.getMyLocationMarker());
+        }
         map.addOverlay(marker);
+        me.setMyLocationMarker(marker);
         map.centerAndZoom(point,15);
     },
     // 定位失败
