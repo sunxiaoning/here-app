@@ -17,17 +17,13 @@ Ext.define('here.view.map.Map', {
         //是否监听标点的点击事件
         markerTap: true,
         locationFinish : false,
-        data: [
-                    { lng: '121.538089', lat: '31.22488', name: '上海东昌',address : '上海市浦东新区峨山路91弄160号陆家嘴软件园'}, 
-                    { lng: '121.538784', lat: '31.223483', name: '上海乐赚',address:'上海市浦东新区峨山路91弄98号陆家嘴软件园' },
-                    { lng: '121.48393', lat: '31.291559', name: '虹口区教师进修学院',address:'水电路839'},
-                    { lng: '121.486409', lat: '31.292679', name: '智慧桥创业园',address:'上海市虹口区广灵四路116号-1号楼-203'}
-              ]
+        data: null
     },
     
     // 点击坐标处理
     onTapMarker : function (me, marker) {
-        Ext.Msg.confirm("选择我的位置", "选中位置："+marker.options.name+","+marker.options.address, Ext.emptyFn);
+        var infoWindow = new BMap.InfoWindow(marker.options.name);
+        marker.openInfoWindow(infoWindow);
     },
 
     initialize: function(){
@@ -35,6 +31,7 @@ Ext.define('here.view.map.Map', {
         var myLocation;
         var markData = [];
         if(typeof(baidumap_location) != 'undefined'){
+            me.callParent();
             
             // 进行定位 
             baidumap_location.getCurrentPosition(function (result) {
@@ -43,8 +40,38 @@ Ext.define('here.view.map.Map', {
                     lng:result.longitude,
                     lat:result.latitude
                 };
-                me.setCenter(myLocation);      
+                me.setCenter(myLocation);
+
+                // 移动到我的位置
+                map.panTo(new BMap.Point(me.getCenter().lng,me.getCenter().lat));  
+                      
+                      // 添加我的位置标注
+                      me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
+                      
+                      // 添加我的位置周边位置
+                      Ext.Ajax.request({
+                            url: 'http://186685me27.imwork.net/locationController/getNearbyLocationList',
+                            useDefaultXhrHeader: false,
+                            params: {
+                                lat : me.getCenter().lat,
+                                lng : me.getCenter().lng,
+                                radius : 1000
+                            },
+                            method : "POST",
+                            success: function(response){
+                                var responseJSON = Ext.JSON.decode(response.responseText,true);
+                                me.getStore().addData(responseJSON.pointLocationDtoList);
+                                if(me.getStore().getCount()){
+                                    me.onload(me.getStore());
+                                }
+                            },
+                            failure : function(response) {
+                                Ext.Msg.alert('提示', "加载周围点位置出错！");
+                            }
+                    });
+                      
             }, function (error) {
+                alert(JSON.stringify(error));
                 me.setLocationFinish(true);       
                 Ext.toast(
                     {
@@ -53,56 +80,59 @@ Ext.define('here.view.map.Map', {
                         docked : 'top'
                     }
                 );    
-            },[{
-                timeout : 500
-            }]);
-
-            // 等待定位请求
-            function waitLocation(){
-                function sleep(numberMillis) { 
-                    var now = new Date(); 
-                    var exitTime = now.getTime() + numberMillis; 
-                    while (true) { 
-                        now = new Date(); 
-                        if (now.getTime() > exitTime) 
-                            return; 
-                    } 
-                }
-
-                // 已等待时间
-                var waitedTime = 0;
-                while(true){
-                    
-                    // 定位成功，或定位超时
-                    if(me.getLocationFinish() || waitedTime > 1000){
-                        break;
-                    }
-                    else {
-                        sleep(300);
-                        waitedTime += 300;
-                    }
-                }
-                me.callParent();
-            }
-            waitLocation();
-           
-           
-
-          
+            });
         }
         else {
-            myLocation = {
-                lng:121.484947,
-                lat:31.29175
-            };
-            me.setCenter(myLocation);
-           // markData.push(myLocation);
+            // markData.push(myLocation);
             // me.setData(markData);
             me.callParent();
+            myLocation = {
+                lat:31.229830,
+                lng:121.539961
+            };
+            me.setCenter(myLocation);
            
         }
         
         
         
+    },
+    initMap : function(){
+        var me = this;
+        me.callParent();
+        me.getMap().panTo(new BMap.Point(me.getCenter().lng,me.getCenter().lat));  
+        
+        // 添加我的位置标注
+        me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
+        
+        // 添加我的位置周边位置
+        Ext.Ajax.request({
+              url: 'http://186685me27.imwork.net/locationController/getNearbyLocationList',
+              useDefaultXhrHeader: false,
+              params: {
+                  lat : me.getCenter().lat,
+                  lng : me.getCenter().lng,
+                  radius : 1000
+              },
+              method : "POST",
+              success: function(response){
+                  var responseJSON = Ext.JSON.decode(response.responseText,true);                
+                  if(responseJSON.pointLocationDtoList){
+                      Ext.Array.each(responseJSON.pointLocationDtoList,function(item, index, length){
+                        me.addPoint(item['lng'], item['lat'], item, me, me.getMap());
+                      });
+                  }
+
+                 
+                  
+              },
+              failure : function(response) {
+                  Ext.Msg.alert('提示', "加载周围点位置出错！");
+              }
+      });
+    },
+    applyStore: function (store) {
+        var me = this;
+        me.callParent();
     }
 });

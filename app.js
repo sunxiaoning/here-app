@@ -60,7 +60,7 @@ Ext.application({
             id : 'mainView'
         }));
 
-        Ext.Viewport.addAfterListener('painted', function(){
+        /*.Viewport.addAfterListener('painted', function(){
             var me = this;
 
             if(navigator.connection.type == Connection.NONE){
@@ -78,7 +78,7 @@ Ext.application({
             // 监听网络状态
             document.addEventListener("offline", Ext.bind(me.onOffline,me), false);
             document.addEventListener("online", Ext.bind(me.onOnline,me), false);
-        }, this);
+        }, this);*/
     },
 
     onOffline : function(){

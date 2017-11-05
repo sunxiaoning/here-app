@@ -72,7 +72,8 @@
                             "xml": "<meta-data android:name=\"com.baidu.lbsapi.API_KEY\" android:value=\"3QpEGgAHh81vHVWWq6yaZmnabGNhc9FE\" />",
                             "count": 1
                         }
-                    ]
+                    ],
+                    "/manifest": []
                 }
             }
         }

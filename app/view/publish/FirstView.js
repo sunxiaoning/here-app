@@ -25,8 +25,10 @@ Ext.define('here.view.publish.FirstView',{
                 ]
             },
             {
-
-                xtype : 'map'
+                xtype : 'map',
+                onTapMarker : function (me, marker) {
+                    Ext.Msg.confirm("选择我的位置", "选中位置："+marker.options.name+","+marker.options.address, Ext.emptyFn);
+                },
             },
             {
                 id: 'firstViewActionSheet',

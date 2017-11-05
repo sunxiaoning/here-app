@@ -86,7 +86,7 @@ if(Ext.util.Format){
 }
 
 if(Ext.MessageBox){
-    Ext.MessageBox.OK.text = 'OK';
+    Ext.MessageBox.OK.text = '';
     Ext.MessageBox.CANCEL.text = 'Cancel';
     Ext.MessageBox.YES.text = 'Yes';
     Ext.MessageBox.NO.text = 'No';

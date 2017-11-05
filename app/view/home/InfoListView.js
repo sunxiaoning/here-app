@@ -15,7 +15,7 @@ Ext.define("here.view.home.InfoListView",{
                 type: 'jsonp',
                 pageParam : false,
                 timeout : 10000,
-                url: 'http://192.168.31.83:3000/api/getUserPublish',
+                url: 'http://192.168.101.218:3000/api/getUserPublish',
                 reader: {
                     type: 'json',
                     rootProperty: 'data'

@@ -2,7 +2,7 @@ Ext.define('here.ux.BMap', {
     alternateClassName: 'bMap',
     extend: 'Ext.Container',
     xtype: 'bMap',
-    requires: ['Ext.util.Geolocation','Ext.Toast'],
+    requires: ['Ext.util.Geolocation','Ext.Toast','Ext.JSON'],
     config: {
         //私有变量，地图对象
         map: null,
@@ -35,7 +35,7 @@ Ext.define('here.ux.BMap', {
         key: null,
         //根据地址直接解析坐标，可以是单个地址，也可以是[{address:'地址'}]数组，可以有其他参数
         address: null,
-        myLocationMarker:null
+        myLocationMarker:null,
     },
     //初始化
     initialize: function () {
@@ -60,12 +60,16 @@ Ext.define('here.ux.BMap', {
             //获取搜索key
             key = me.getKey(),
             //获取地址
-            address = me.getAddress(),
+            address = me.getAddress(),point;
+           
+           
+
             //获取数据源
-            store=me.getStore(),
-            point;
+           var store=me.getStore(),
+         
             //创建地图
             map = new BMap.Map(me.element.dom);
+           
             //获取中心点
             if (Ext.isString(center)) {
                 point = center;
@@ -96,9 +100,6 @@ Ext.define('here.ux.BMap', {
                 //加载定位控件
                 map.addControl(me.getLocateControl());
             }
-
-            // 添加我的位置标注
-            me.addMyPoint(me.getCenter().lng, me.getCenter().lat);	
             
             //地图加载完毕触发事件
             me.fireEvent('showMap', me);
