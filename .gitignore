@@ -1,3 +1,6 @@
 build/
 .idea/
 .sencha/
+resources/sass
+touch/
+cordova/
