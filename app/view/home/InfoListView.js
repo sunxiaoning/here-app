@@ -7,22 +7,61 @@ Ext.define("here.view.home.InfoListView",{
          'Ext.DataView'
     ],
     config : {
-        store: {
-            autoLoad: true,
-            fields: ['desc', 'title','photo'],
+        itemTpl: '<div style="margin-top:5%;font-size:14px;font-weight:bold;"><span style="margin-left:5%;">{title}</span></div><div style="margin-top:5%;"><tpl for="url"><span style="margin-left:5%;"><img src="{.}" style="width:40%;height:40%;" />{publishUser}</span></tpl></div><div style="margin-top:5%;"><span style="margin-left:5%;font-size:10px;"></span><span style="margin-left:5%;font-size:10px;">{publishTime}</span><span style="margin-left:5%;font-size:10px;">距离我{distance}米</span><span style="margin-left:5%;font-size:10px;">点击量：{visitCount}</span></div>'
+    },
+    
+    //初始化
+    initialize: function () {
+        var me = this;
+        var lat = 39.910098;
+        var lng = 116.404081;
+
+        var store = Ext.create('Ext.data.Store',{
+            autoLoad: false,
+            fields: ['id', 'distance','publishTime','publishUser','title','url','visitCount'],
             proxy: {
                 id : 'infoListProxy',
-                type: 'jsonp',
-                pageParam : false,
+                type: 'ajax',
+                actionMethods : {
+                    read : "POST"
+                },
+                extraParams : {
+                    lat : lat,
+                    lng : lng
+                },
                 timeout : 10000,
-                url: 'http://192.168.101.218:3000/api/getUserPublish',
+                url: window.localStorage.getItem('serverUrl')+"/contentController/getLatestPublishList",
                 reader: {
                     type: 'json',
-                    rootProperty: 'data'
+                    rootProperty: 'pageResult.resultList'
                 }
             }
-        },
-        itemTpl: '<div style="margin-top:5%;font-size:14px;font-weight:bold;"><span style="margin-left:5%;">{title}</span></div><div style="margin-top:5%;"><tpl for="photo"><span style="margin-left:5%;"><img src="{.}" style="width:40%;height:40%;" /></span></tpl></div><div style="margin-top:5%;"><span style="margin-left:5%;font-size:10px;">William</span><span style="margin-left:5%;font-size:10px;">2小时前</span><span style="margin-left:5%;font-size:10px;">500M</span><span style="margin-left:5%;font-size:10px;">点击量：1000</span></div>'
-    }
+        });
+        me.setStore(store);
+        me.callParent();
+        
+        // 使用百度地图SDK定位
+        if(typeof(baidumap_location) != 'undefined'){
+            
+            
+            // 进行定位 
+            baidumap_location.getCurrentPosition(function (result) {
+               me.getStore().getProxy().setExtraParams({
+                    lat : result.latitude,
+                    lng : result.longitude
+               });
+               me.getStore().load();
+            }, function (error) {
+                Ext.toast(
+                    {
+                        message: '定位失败!',
+                        timeout: 200,
+                        docked : 'top'
+                    }
+                );
+            });
+        }
+        
+    },
    
 });

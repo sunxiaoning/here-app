@@ -3,7 +3,7 @@ Ext.define('here.view.Main', {
     xtype: 'main',
 	config : {
 		defaultBackButtonText : '返回',
-        autoDestroy: false,
+		autoDestroy: false,
 		items:[
 			{
 				xtype: 'tabpanel',
@@ -20,8 +20,6 @@ Ext.define('here.view.Main', {
 							xclass: 'here.view.my.MyContainer'
 						}
 				]
-							
-					
 					
 			}
 		

@@ -77,7 +77,7 @@ Ext.define('here.ux.BMap', {
                 point = new BMap.Point(center.lng, center.lat);
             }
             //设置中心点和地图显示级别
-            map.centerAndZoom(point, 15);
+            // map.centerAndZoom(point, 15);
             
             //设置地图对象，方便在其他地方获取到地图对象
             me.setMap(map);

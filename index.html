@@ -53,6 +53,18 @@
     <!-- The line below must be kept intact for Sencha Command to build your application -->
     <script id="microloader" type="text/javascript" src=".sencha/app/microloader/development.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ataEWXnBYVkj54G29V7iC9XQ"></script>
+    <script type="text/javascript" src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <script>
+
+        // 存储hostIp地址
+        if(typeof(returnCitySN) == "undefined"){ // 防止断网情况
+            window.localStorage.setItem("hostIp",'127.0.0.1');
+        }
+        else {
+            window.localStorage.setItem("hostIp",returnCitySN["cip"]);
+        }
+        
+    </script>
 
 </head>
 <body>

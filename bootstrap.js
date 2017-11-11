@@ -667,11 +667,12 @@ Ext.ClassManager.addNameAlternateMappings({
   "here.view.home.InfoDetail": [],
   "here.view.home.InfoListView": [],
   "here.view.home.LatestView": [],
-  "here.view.map.Map": [
-    "map"
-  ],
+  "here.view.map.ContentViewMap": [],
+  "here.view.map.LocationViewMap": [],
   "here.view.my.MyContainer": [],
-  "here.view.publish.FirstView": []
+  "here.view.publish.FirstView": [],
+  "here.view.publish.FourthView": [],
+  "here.view.publish.ThirdView": []
 });
 
 Ext.ClassManager.addNameAliasMappings({
@@ -1409,13 +1410,22 @@ Ext.ClassManager.addNameAliasMappings({
   "here.view.home.LatestView": [
     "widget.latestView"
   ],
-  "here.view.map.Map": [
-    "widget.map"
+  "here.view.map.ContentViewMap": [
+    "widget.contentViewMap"
+  ],
+  "here.view.map.LocationViewMap": [
+    "widget.locationViewMap"
   ],
   "here.view.my.MyContainer": [
     "widget.myContainer"
   ],
-  "here.view.publish.FirstView": []
+  "here.view.publish.FirstView": [],
+  "here.view.publish.FourthView": [
+    "widget.fourthView"
+  ],
+  "here.view.publish.ThirdView": [
+    "widget.thirdView"
+  ]
 });
 
 

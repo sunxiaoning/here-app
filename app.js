@@ -25,7 +25,10 @@ Ext.application({
         'home.InfoListView',
         'home.InfoDetail',
         'publish.FirstView',
-        'map.Map',
+        'publish.ThirdView',
+        'publish.FourthView',
+        'map.LocationViewMap',
+        'map.ContentViewMap',
         'my.MyContainer'
     ],
     controllers: [
@@ -55,14 +58,26 @@ Ext.application({
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
 
+        // 获取本机IP地址
+        var hostIp = window.localStorage.getItem("hostIp");
+
+        // 清理storage缓存数据
+        window.localStorage.clear();
+
+        // 设置本机IP地址
+        window.localStorage.setItem("hostIp",hostIp);
+
+        // 设置服务器主机地址
+        window.localStorage.setItem("serverUrl","http://186685me27.imwork.net");
+
         // Initialize the main view
         Ext.Viewport.add(Ext.create('here.view.Main',{
             id : 'mainView'
         }));
+        
 
-        /*.Viewport.addAfterListener('painted', function(){
+        Ext.Viewport.addAfterListener('painted', function(){
             var me = this;
-
             if(navigator.connection.type == Connection.NONE){
                
                 // 用户提示
@@ -78,7 +93,7 @@ Ext.application({
             // 监听网络状态
             document.addEventListener("offline", Ext.bind(me.onOffline,me), false);
             document.addEventListener("online", Ext.bind(me.onOnline,me), false);
-        }, this);*/
+        }, this);
     },
 
     onOffline : function(){

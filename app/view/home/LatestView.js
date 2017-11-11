@@ -40,7 +40,7 @@ Ext.define('here.view.home.LatestView', {
 					},
 					{
 						id: 'locationView',
-						xtype : 'map'
+						xtype : 'contentViewMap'
 					},
 					{
 						id: 'infoListView',
