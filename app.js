@@ -68,7 +68,7 @@ Ext.application({
         window.localStorage.setItem("hostIp",hostIp);
 
         // 设置服务器主机地址
-        window.localStorage.setItem("serverUrl","http://186685me27.imwork.net");
+        window.localStorage.setItem("serverUrl","http://39.106.122.85:8080");
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('here.view.Main',{
