@@ -27,30 +27,39 @@ Ext.define('here.view.map.ContentViewMap', {
     initMap : function(){
         var me = this;
         me.callParent();
+
+        /*var myLocation = {
+            lng:116.404081,
+            lat:39.910098
+        };
+        me.setCenter(myLocation);
+
+        // 添加我的位置标注
+        me.addMyPoint(me.getCenter().lng, me.getCenter().lat);*/
          
-        // 进行定位 
-       baidumap_location.getCurrentPosition(function (result) {
-            me.setLocationFinish(true);
-            myLocation = {
-                lng:result.longitude,
-                lat:result.latitude
-            };
-            me.setCenter(myLocation);
-            
-            // 添加我的位置标注
-            me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
-                    
-        }, function (error) {
-            alert(JSON.stringify(error));
-            me.setLocationFinish(true);       
-            Ext.toast(
-                {
-                    message: '定位失败!',
-                    timeout: 200,
-                    docked : 'top'
-                }
-            );    
-        });
+        // 进行定位
+        if(typeof(baidumap_location) != 'undefined'){
+            baidumap_location.getCurrentPosition(function (result) {
+                var myLocation = {
+                    lng:result.longitude,
+                    lat:result.latitude
+                };
+                me.setCenter(myLocation);
+
+                // 添加我的位置标注
+                me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
+
+            }, function (error) {
+                alert(JSON.stringify(error));
+                Ext.toast(
+                    {
+                        message: '定位失败!',
+                        timeout: 200,
+                        docked : 'top'
+                    }
+                );
+            });
+        }
     },
     applyStore: function (store) {
         var me = this;

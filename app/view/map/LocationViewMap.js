@@ -32,57 +32,5 @@ Ext.define('here.view.map.LocationViewMap', {
     initMap : function(){
         var me = this;
         me.callParent();
-         
-        // 进行定位 
-        baidumap_location.getCurrentPosition(function (result) {
-            me.setLocationFinish(true);
-            myLocation = {
-                lng:result.longitude,
-                lat:result.latitude
-            };
-            me.setCenter(myLocation);
-            
-            // 添加我的位置标注
-            me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
-            
-            // 添加我的位置周边位置
-            Ext.Ajax.request({
-                  url: window.localStorage.getItem("serverUrl")+'/locationController/getNearbyLocationList',
-                  useDefaultXhrHeader: false,
-                  params: {
-                      lat : me.getCenter().lat,
-                      lng : me.getCenter().lng,
-                      radius : 1000
-                  },
-                  method : "POST",
-                  success: function(response){
-                      var responseJSON = Ext.JSON.decode(response.responseText,true);                
-                      if(responseJSON.pointLocationDtoList){
-                          Ext.Array.each(responseJSON.pointLocationDtoList,function(item, index, length){
-                            me.addPoint(item['lng'], item['lat'], item, me, me.getMap());
-                          });
-                      }
-                  },
-                  failure : function(response) {
-                    Ext.Msg.alert('提示', '加载周围点位置出错！', Ext.emptyFn);                
-                    
-                  }
-          });
-                    
-        }, function (error) {
-            alert(JSON.stringify(error));
-            me.setLocationFinish(true);       
-            Ext.toast(
-                {
-                    message: '定位失败!',
-                    timeout: 200,
-                    docked : 'top'
-                }
-            );    
-        });
-    },
-    applyStore: function (store) {
-        var me = this;
-        me.callParent();
     }
 });

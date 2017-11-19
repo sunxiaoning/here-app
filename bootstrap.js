@@ -657,6 +657,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.viewport.WindowsPhone": [
     "Ext.viewport.WP"
   ],
+  "here.controller.MenuTabController": [],
   "here.controller.home.LatestViewController": [],
   "here.controller.publish.ContentPublishController": [],
   "here.ux.BMap": [
@@ -1390,6 +1391,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.Ios": [],
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [],
+  "here.controller.MenuTabController": [],
   "here.controller.home.LatestViewController": [],
   "here.controller.publish.ContentPublishController": [],
   "here.ux.BMap": [

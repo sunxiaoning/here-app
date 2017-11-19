@@ -22,13 +22,42 @@ Ext.define('here.controller.home.LatestViewController', {
         }
     },
     toggleView : function(segmentbutton, button, isPressed, eOpts){
+        var me = this;
         if(button.getId() == 'locationButton'){
-            this.getLocationView().show();
-            this.getInfoListView().hide();
+            me.getLocationView().show();
+            me.getInfoListView().hide();
         }
         else {
-            this.getLocationView().hide();
-            this.getInfoListView().show();
+            me.getLocationView().hide();
+            me.getInfoListView().show();
+            me.loadInfoList();
+        }
+    },
+    loadInfoList : function(){
+        var me = this;
+
+        // 获取信息列表视图
+        var infoListView = me.getInfoListView();
+
+        // 使用百度地图SDK定位
+        if(typeof(baidumap_location) != 'undefined'){
+
+            // 进行定位
+            baidumap_location.getCurrentPosition(function (result) {
+                infoListView.getStore().getProxy().setExtraParams({
+                    lat : result.latitude,
+                    lng : result.longitude
+                });
+                infoListView.getStore().load();
+            }, function (error) {
+                Ext.toast(
+                    {
+                        message: '定位失败!',
+                        timeout: 200,
+                        docked : 'top'
+                    }
+                );
+            });
         }
     },
     loadInfoListFail : function(infoListProxy, response, operation, eOpts ){
@@ -41,6 +70,7 @@ Ext.define('here.controller.home.LatestViewController', {
         );
     },
     showInfoDetail : function( dataItem, index, target, record, e, eOpts ){
+        window.localStorage.setItem("infoListView.contentId",record.data.id);
         var infoDetail = Ext.widget("infoDetail");
         this.getMainView().push(infoDetail);
     }

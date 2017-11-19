@@ -31,6 +31,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
             mainView : "#mainView"
         }
     },
+
     showActionSheet : function(button, e, eOpts ){
          if(window.localStorage.getItem("locationId") == null){
             Ext.Msg.alert('提示', '请先选择一个位置！', Ext.emptyFn);                

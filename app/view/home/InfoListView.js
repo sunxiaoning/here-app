@@ -39,28 +39,7 @@ Ext.define("here.view.home.InfoListView",{
         });
         me.setStore(store);
         me.callParent();
-        
-        // 使用百度地图SDK定位
-        if(typeof(baidumap_location) != 'undefined'){
-            
-            
-            // 进行定位 
-            baidumap_location.getCurrentPosition(function (result) {
-               me.getStore().getProxy().setExtraParams({
-                    lat : result.latitude,
-                    lng : result.longitude
-               });
-               me.getStore().load();
-            }, function (error) {
-                Ext.toast(
-                    {
-                        message: '定位失败!',
-                        timeout: 200,
-                        docked : 'top'
-                    }
-                );
-            });
-        }
+        me.getStore().load();
         
     },
    

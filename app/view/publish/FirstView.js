@@ -25,7 +25,9 @@ Ext.define('here.view.publish.FirstView',{
                 ]
             },
             {
-                xtype : 'locationViewMap'
+                id : 'locationViewMap',
+                xtype : 'locationViewMap',
+                hidden : true
             },
             {
                 id: 'firstViewActionSheet',

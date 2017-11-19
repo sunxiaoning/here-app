@@ -33,7 +33,8 @@ Ext.application({
     ],
     controllers: [
         'home.LatestViewController',
-        'publish.ContentPublishController'
+        'publish.ContentPublishController',
+        'MenuTabController'
     ],
 
     icon: {
@@ -68,7 +69,8 @@ Ext.application({
         window.localStorage.setItem("hostIp",hostIp);
 
         // 设置服务器主机地址
-        window.localStorage.setItem("serverUrl","http://39.106.122.85:8080");
+        // window.localStorage.setItem("serverUrl","http://39.106.122.85:8080");
+        window.localStorage.setItem("serverUrl","http://127.0.0.1:8080");
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('here.view.Main',{
@@ -76,7 +78,7 @@ Ext.application({
         }));
         
 
-        Ext.Viewport.addAfterListener('painted', function(){
+        /*Ext.Viewport.addAfterListener('painted', function(){
             var me = this;
             if(navigator.connection.type == Connection.NONE){
                
@@ -93,7 +95,7 @@ Ext.application({
             // 监听网络状态
             document.addEventListener("offline", Ext.bind(me.onOffline,me), false);
             document.addEventListener("online", Ext.bind(me.onOnline,me), false);
-        }, this);
+        }, this);*/
     },
 
     onOffline : function(){
