@@ -35,7 +35,7 @@ Ext.define('here.ux.BMap', {
         key: null,
         //根据地址直接解析坐标，可以是单个地址，也可以是[{address:'地址'}]数组，可以有其他参数
         address: null,
-        myLocationMarker:null,
+        myLocationMarker:null
     },
     //初始化
     initialize: function () {

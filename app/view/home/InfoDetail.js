@@ -3,7 +3,7 @@ Ext.define('here.view.home.InfoDetail', {
     xtype : 'infoDetail',
     requires: [
                 'Ext.data.Store',
-                'Ext.data.proxy.JsonP',
+                'Ext.data.proxy.JsonP'
               ],
     config: {
         contentId : null,

@@ -35,7 +35,7 @@ Ext.define('here.view.home.LatestView', {
 									text: '信息视图'
 								}
 							]
-						},
+						}
 					]
 					},
 					{
