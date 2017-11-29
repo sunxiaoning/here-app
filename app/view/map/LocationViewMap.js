@@ -22,7 +22,7 @@ Ext.define('here.view.map.LocationViewMap', {
     // 点击坐标处理
     onTapMarker : function (me, marker) {
         Ext.Msg.confirm("提示", "当前位置为："+marker.options.address+" "+marker.options.title, function(buttonId){
-            if(buttonId = "yes"){
+            if(buttonId == "yes"){
                 window.localStorage.setItem("locationId",marker.options.id);
                 Ext.Msg.alert('提示', '位置已选择！', Ext.emptyFn);                
             }

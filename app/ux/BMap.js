@@ -155,6 +155,7 @@ Ext.define('here.ux.BMap', {
             me.onLoad(newStore);
         }
     },
+
     //数据加载成功,加载坐标点
     onLoad: function (store) {
         var me = this,

@@ -68,6 +68,8 @@ Ext.define('here.controller.publish.ContentPublishController', {
             Ext.Msg.alert('提示', '选择图片失败，请重试！', Ext.emptyFn);                
         }, {
             quality: 50,
+            targetWidth : 400,
+            targetHeight : 500,
             destinationType: navigator.camera.DestinationType.FILE_URI,
             sourceType: source 
         });
