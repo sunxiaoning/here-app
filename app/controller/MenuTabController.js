@@ -42,6 +42,9 @@ Ext.define('here.controller.MenuTabController', {
 
             // 进行定位
             baidumap_location.getCurrentPosition(function (result) {
+
+                //  存储我的位置
+                window.localStorage.setItem("myLocation",JSON.stringify(result));
                 var myLocation = {
                     lng:result.longitude,
                     lat:result.latitude
@@ -65,7 +68,9 @@ Ext.define('here.controller.MenuTabController', {
                         var responseJSON = Ext.JSON.decode(response.responseText,true);
                         if(responseJSON.pointLocationDtoList){
                             Ext.Array.each(responseJSON.pointLocationDtoList,function(item, index, length){
-                                locationView.addPoint(item['lng'], item['lat'], item, locationView, locationView.getMap());
+                                if(item['lng'] != locationView.getCenter().lng || item['lat'] != locationView.getCenter().lat) {
+                                    locationView.addPoint(item['lng'], item['lat'], item, locationView, locationView.getMap());
+                                }
                             });
                         }
                     },

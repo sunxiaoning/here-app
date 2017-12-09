@@ -91,34 +91,64 @@ Ext.define('here.controller.publish.ContentPublishController', {
     },
     submitContent : function(){
         var me = this;
+        var formParms = {};
+        formParms['topicId'] = Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=topicId]")[0].getValue();
+        formParms['title'] = Ext.ComponentQuery.query("#contentFormPanel textfield[name=title]")[0].getValue();
+        formParms['content'] = Ext.ComponentQuery.query("#contentFormPanel textareafield[name=content]")[0].getValue();
+        formParms['userId'] = Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=userId]")[0].getValue();
+        formParms['locationId'] = Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=locationId]")[0].getValue();
+        formParms['publishIp'] = Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=publishIp]")[0].getValue();
+
+        // 防止重复请求
         me.getSubmitContentButton().set('disabled',true);
-        me.getContentFormPanel().submit({
+
+        // 位置不存在，提交新的位置请求
+        Ext.Ajax.request({
             url: window.localStorage.getItem("serverUrl")+'/contentController/userPublish',
-            method: 'POST',
-            success : function(form, result) {  
+            useDefaultXhrHeader: false,
+            params: formParms,
+            method : "POST",
+            success: function(response){
+                var responseJSON = Ext.JSON.decode(response.responseText, true);
+                if(responseJSON.responseCode != 'SUCCESS'){
+                    Ext.Msg.alert('提示', '发布失败，请稍后重试！', function(){
+                        me.getSubmitContentButton().set('disabled',false);
+                    });
+                    return;
+                }
+
+                // 上传图片附件
                 var imagesUrl = window.localStorage.getItem("imagesUrl");
                 if(imagesUrl){
                     Ext.Array.each(imagesUrl.split(","),function(item, index, length){
-                        me.uploadPhoto(item,result.contentId);
+                        me.uploadPhoto(item,responseJSON.contentId);
                     });
                 }
+
+                // 发布成功后续逻辑
                 Ext.Msg.alert('提示', '发布成功！', function(){
 
-                
+                    // 清空表单
+                    Ext.ComponentQuery.query("#contentFormPanel textfield[name=title]")[0].setValue("");
+                    Ext.ComponentQuery.query("#contentFormPanel textareafield[name=content]")[0].setValue("");
 
-                    // 清空表单值
-                    me.getContentFormPanel().reset();
-                    
                     // 清除缓存数据
                     window.localStorage.removeItem("locationId");
                     window.localStorage.removeItem("imagesUrl");
+
+                    // 恢复按钮可用状态
                     me.getSubmitContentButton().set('disabled',false);
-                });                                      
+
+                    // 返回上一页面
+                    me.getMainView().pop(2);
+                });
+
             },
-            failure : function(form, action) {  
+            failure : function(response) {
                 Ext.Msg.alert('提示', '发布失败，请稍后重试！', function(){
                     me.getSubmitContentButton().set('disabled',false);
-                });                                
+                });
+
             }
         });
     },

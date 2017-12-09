@@ -15,6 +15,7 @@ Ext.define('here.view.map.LocationViewMap', {
          },
         //是否监听标点的点击事件
         markerTap: true,
+        myMarkerTap : true,
         locationFinish : false,
         data: null
     },
@@ -29,6 +30,42 @@ Ext.define('here.view.map.LocationViewMap', {
         });   
 
     },
+
+    // 点击我的位置图标
+    onTapMyMarker : function (me, marker) {
+        Ext.Msg.confirm("提示", "您的当前位置为：经度：" + marker.getPosition().lng + "，纬度：" + marker.getPosition().lat, function (buttonId) {
+            if (buttonId == "yes") {
+
+                // 获取我的位置
+                var myLocation = Ext.JSON.decode(window.localStorage.getItem("myLocation"),true);
+
+                // 位置不存在，提交新的位置请求
+                Ext.Ajax.request({
+                    url: window.localStorage.getItem("serverUrl")+'/locationController/postNewLocation',
+                    useDefaultXhrHeader: false,
+                    params: {
+                        lng : myLocation.longitude,
+                        lat : myLocation.latitude,
+                        title : myLocation.locationDescribe,
+                        address : myLocation.addr
+                    },
+                    method : "POST",
+                    success: function(response){
+                        var responseJSON = Ext.JSON.decode(response.responseText,true);
+                        if(responseJSON.locationId){
+                            window.localStorage.setItem("locationId",responseJSON.locationId);
+                            Ext.Msg.alert('提示', '位置已选择！', Ext.emptyFn);
+                        }
+                    },
+                    failure : function(response) {
+                        Ext.Msg.alert('提示', '提交我的点位置信息出错！', Ext.emptyFn);
+
+                    }
+                });
+            }
+        });
+    },
+
     initMap : function(){
         var me = this;
         me.callParent();

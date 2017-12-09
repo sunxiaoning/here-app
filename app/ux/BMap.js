@@ -16,6 +16,7 @@ Ext.define('here.ux.BMap', {
         center: '北京',
         //是否监听标点的点击事件
         markerTap: false,
+        myMarkerTap : false,
         //私有变量，定位按钮
         locate: null,
         //私有变量，定位控件
@@ -312,10 +313,22 @@ Ext.define('here.ux.BMap', {
         var point = new BMap.Point(lng, lat);
       
         var myIcon = new BMap.Icon("resources/map/myLocation.gif", new BMap.Size(33,36));
-        var marker = new BMap.Marker(point,{icon:myIcon});  
+        var marker = new BMap.Marker(point,{
+            icon:myIcon,
+            title : '我的当前位置'
+        });
+
         // 将标注添加到地图中
         if(me.getMyLocationMarker() != null){
             map.removeOverlay(me.getMyLocationMarker());
+        }
+        if (me.getMyMarkerTap()) {
+
+            //添加点击监听
+            marker.addEventListener("click",
+                function (type, target) {
+                    me.fireAction('tapMarker', [me, this], 'onTapMyMarker');
+                });
         }
         map.addOverlay(marker);
         me.setMyLocationMarker(marker);
