@@ -33,7 +33,10 @@ Ext.define('here.view.map.LocationViewMap', {
 
     // 点击我的位置图标
     onTapMyMarker : function (me, marker) {
-        Ext.Msg.confirm("提示", "您的当前位置为：经度：" + marker.getPosition().lng + "，纬度：" + marker.getPosition().lat, function (buttonId) {
+
+        // 获取我的位置
+        var myLocation = Ext.JSON.decode(window.localStorage.getItem("myLocation"),true);
+        Ext.Msg.confirm("提示", "您的当前位置为：" + myLocation.addr + " " + myLocation.locationDescribe, function (buttonId) {
             if (buttonId == "yes") {
 
                 // 获取我的位置

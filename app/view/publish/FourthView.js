@@ -8,8 +8,8 @@ Ext.define('here.view.publish.FourthView',{
             {
                 id : "contentFormPanel",
                 xtype: "formpanel",
-                config : {
-                  style : 'padding : 5px'
+                layout: {
+                    type: 'vbox'
                 },
                 items : [
                     {
@@ -37,15 +37,15 @@ Ext.define('here.view.publish.FourthView',{
                     },
                     {
                         xtype: 'textareafield',
-                        config : {
-                            maxRows : 20
-                        },
+                        maxRows : 100,
                         name: 'content',
-                        label: '内容'
+                        label: '内容',
+                        flex : 1
                     },
                     {
                         id : 'submitContentButton',
                         xtype : 'button',
+                        docked : 'bottom',
                         text : '提交发布'
                     }
                     

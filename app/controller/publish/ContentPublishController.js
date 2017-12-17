@@ -67,9 +67,9 @@ Ext.define('here.controller.publish.ContentPublishController', {
         }, function(message){
             Ext.Msg.alert('提示', '选择图片失败，请重试！', Ext.emptyFn);                
         }, {
-            quality: 50,
-            targetWidth : 400,
-            targetHeight : 500,
+            quality: 100,
+            targetWidth : 600,
+            targetHeight : 800,
             destinationType: navigator.camera.DestinationType.FILE_URI,
             sourceType: source 
         });
@@ -83,7 +83,8 @@ Ext.define('here.controller.publish.ContentPublishController', {
 
         // 获取本机IP地址
         Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=publishIp]")[0].setValue(window.localStorage.getItem('hostIp'));
-       
+
+        me.getMainView().set
 
         // 跳转到内容编辑页面
         me.getMainView().push(fourthView);

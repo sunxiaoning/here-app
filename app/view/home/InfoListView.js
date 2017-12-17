@@ -1,22 +1,28 @@
 Ext.define("here.view.home.InfoListView",{
-    extend : 'Ext.DataView',
+    extend : 'Ext.List',
     xtype : 'infoListView',
     requires : [
 		'Ext.data.Store',
         'Ext.data.proxy.JsonP',
-         'Ext.DataView'
+         'Ext.DataView',
+        'here.ux.PullRefreshFn'
     ],
     config : {
+        emptyText : '没有数据！',
+        style : 'background-color:#b3ffff',
         plugins: [
             {
-                xclass: 'Ext.plugin.PullRefresh',
+                xtype : 'refreshFn',
                 pullText: '下拉以刷新',
                 releaseText : '松开以刷新',
                 loadingText : '正在加载...',
                 loadedText : '数据已加载',
                 lastUpdatedText : '最后更新时间：&nbsp;',
                 lastUpdatedDateFormat : 'Y-m-d h:i:s',
-                scrollerAutoRefresh : true
+                scrollerAutoRefresh : true,
+                refreshFn: function (loaded) {
+                    loaded.getList().getStore().loadPage(1);
+                }
             },
             {
                 xclass: 'Ext.plugin.ListPaging',
@@ -26,7 +32,7 @@ Ext.define("here.view.home.InfoListView",{
                 noMoreRecordsText : '没有更多数据了'
             }
         ],
-        itemTpl: '<div style="margin-top:5%;font-size:14px;font-weight:bold;"><span style="margin-left:5%;">{title}</span></div><div style="margin-top:5%;"><tpl for="url"><span style="margin-left:5%;"><img src="'+window.localStorage.getItem('serverUrl')+'/fileViewController/getFileDetail?fileUrl={.}" style="width:40%;height:40%;" /></span></tpl></div><div style="margin-top:5%;"><span style="margin-left:5%;font-size:10px;">{publishUser}</span><span style="margin-left:5%;font-size:10px;">{publishTime}</span><span style="margin-left:5%;font-size:10px;">{locationDescribe}<span style="margin-left:5%;font-size:10px;">距离我{distance}</span></span></div>'
+        itemTpl: '<div style="margin-top:5%;font-size:18px;font-weight:bold;"><span style="margin-left:5%;">{title}</span></div><div style="margin-top:5%;"><span style="margin-left:5%;font-size:10px;">{publishUser}</span><span style="margin-left:5%;font-size:10px;">{publishTime}</span><span style="margin-left:5%;font-size:10px;">{locationDescribe}<span style="margin-left:5%;font-size:10px;">距离我{distance}</span></span></div>'
     },
     
     //初始化
@@ -38,6 +44,7 @@ Ext.define("here.view.home.InfoListView",{
         var store = Ext.create('Ext.data.Store',{
             autoLoad: false,
             fields: ['id', 'distance','publishTime','publishUser','locationDescribe','title','url','visitCount'],
+            pageSize:10,
             proxy: {
                 id : 'infoListProxy',
                 type: 'ajax',
@@ -52,7 +59,8 @@ Ext.define("here.view.home.InfoListView",{
                 url: window.localStorage.getItem('serverUrl')+"/contentController/getLatestPublishList",
                 reader: {
                     type: 'json',
-                    rootProperty: 'pageResult.resultList'
+                    rootProperty: 'pageResult.resultList',
+                    totalProperty: 'pageResult.totalCount'
                 }
             }
         });
