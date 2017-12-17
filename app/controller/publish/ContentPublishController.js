@@ -18,6 +18,9 @@ Ext.define('here.controller.publish.ContentPublishController', {
             },
             fourthViewButton : {
                 tap : 'showFourthView'
+            },
+            addMorePicButton : {
+                tap : 'addMorePicButton'
             }
         },
         refs: {
@@ -28,16 +31,23 @@ Ext.define('here.controller.publish.ContentPublishController', {
             contentFormPanel : '#contentFormPanel',
             fourthViewButton : '#fourthViewButton',
             submitContentButton : '#submitContentButton',
-            mainView : "#mainView"
+            mainView : "#mainView",
+            addMorePicButton : '#addMorePicButton'
         }
+    },
+
+    addMorePicButton : function(button,e,eOpts){
+        var me = this;
+        me.getMainView().pop();
+        me.showActionSheet();
     },
 
     showActionSheet : function(button, e, eOpts ){
          if(window.localStorage.getItem("locationId") == null){
-            Ext.Msg.alert('提示', '请先选择一个位置！', Ext.emptyFn);                
+            Ext.Msg.alert('提示', '请先选择一个位置！', Ext.emptyFn);
             return;
-         }
-         this.getFirstViewActionSheet().show();
+        }
+        this.getFirstViewActionSheet().show();
        
     },
     takePhoto : function(){
@@ -51,18 +61,25 @@ Ext.define('here.controller.publish.ContentPublishController', {
     },
     getPhoto : function(source){
         var me = this;
-        me.getFirstViewActionSheet().hide();   
+        me.getFirstViewActionSheet().hide();
         navigator.camera.getPicture(function(imageUrl){
             var imagesUrl = window.localStorage.getItem("imagesUrl");
             if(imagesUrl){
-                imagesUrl += ","+imagesUrl;
+                imagesUrl += ","+imageUrl;
             }
             else {
                 imagesUrl = imageUrl;
             }
             window.localStorage.setItem("imagesUrl",imagesUrl);
             var thirdView = Ext.widget("thirdView");
-            Ext.ComponentQuery.query("#imagePanel")[0].setSrc(imageUrl);
+            Ext.Array.each(imagesUrl.split(","),function(item, index, length){
+                thirdView.add({
+                    margin : '10 10 10 10',
+                    xtype: "image",
+                    src: item,
+                    flex : 2
+                });
+            });
             me.getMainView().push(thirdView);
         }, function(message){
             Ext.Msg.alert('提示', '选择图片失败，请重试！', Ext.emptyFn);                
@@ -83,8 +100,6 @@ Ext.define('here.controller.publish.ContentPublishController', {
 
         // 获取本机IP地址
         Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=publishIp]")[0].setValue(window.localStorage.getItem('hostIp'));
-
-        me.getMainView().set
 
         // 跳转到内容编辑页面
         me.getMainView().push(fourthView);

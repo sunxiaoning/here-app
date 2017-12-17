@@ -3,10 +3,15 @@ Ext.define('here.view.publish.ThirdView',{
     xtype : 'thirdView',
     config : {
         title : '选择视频图片',
-        layout : 'card',
+        layout : 'vbox',
+        scrollable: {
+            direction: 'vertical',
+            directionLock: true
+        },
         items : [
             {
                 xtype : 'toolbar',
+                flex : 1,
                 docked : 'top',
                 items : [
                     {
@@ -20,11 +25,12 @@ Ext.define('here.view.publish.ThirdView',{
                 ]
             },
             {
-                id : "imagePanel",
-                xtype: "image",
-                src: "http://placehold.it/200x200",
-                width: '100%',
-                height: '100%'
+                id : 'addMorePicButton',
+                ui : 'confirm',
+                xtype : 'button',
+                docked : 'bottom',
+                text : '添加更多图片',
+                flex : 1
             }
         ]
     }

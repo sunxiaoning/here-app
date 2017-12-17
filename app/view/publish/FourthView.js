@@ -44,9 +44,11 @@ Ext.define('here.view.publish.FourthView',{
                     },
                     {
                         id : 'submitContentButton',
+                        ui: 'confirm',
                         xtype : 'button',
                         docked : 'bottom',
-                        text : '提交发布'
+                        text : '提交发布',
+                        flex : 1
                     }
                     
                 ]
