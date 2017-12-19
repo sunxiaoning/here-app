@@ -38,17 +38,35 @@ Ext.define('here.controller.publish.ContentPublishController', {
 
     addMorePicButton : function(button,e,eOpts){
         var me = this;
+        var imagesUrl = window.localStorage.getItem("imagesUrl");
+        if(imagesUrl.split(",").length >= 3){
+            Ext.Msg.alert('提示', '最多只能添加3长图片！', Ext.emptyFn);
+            return;
+        }
         me.getMainView().pop();
         me.showActionSheet();
     },
 
     showActionSheet : function(button, e, eOpts ){
-         if(window.localStorage.getItem("locationId") == null){
+        if(window.localStorage.getItem("locationId") == null){
             Ext.Msg.alert('提示', '请先选择一个位置！', Ext.emptyFn);
             return;
         }
-        this.getFirstViewActionSheet().show();
-       
+        var imagesUrl = window.localStorage.getItem("imagesUrl");
+        if(imagesUrl && imagesUrl.split(",").length >= 3){
+            var thirdView = Ext.widget("thirdView");
+            Ext.Array.each(imagesUrl.split(","),function(item, index, length){
+                thirdView.add({
+                    xtype : 'panel',
+                    html:'<div style="margin-top: 5%;margin-left: 5%"><img src="'+item+'" width="90%" height="100%"></div>'
+                });
+            });
+            this.getMainView().push(thirdView);
+        }
+        else {
+            this.getFirstViewActionSheet().show();
+        }
+
     },
     takePhoto : function(){
         var me = this;
@@ -74,10 +92,8 @@ Ext.define('here.controller.publish.ContentPublishController', {
             var thirdView = Ext.widget("thirdView");
             Ext.Array.each(imagesUrl.split(","),function(item, index, length){
                 thirdView.add({
-                    margin : '10 10 10 10',
-                    xtype: "image",
-                    src: item,
-                    flex : 2
+                    xtype : 'panel',
+                    html:'<div style="margin-left: 5%"><img src="'+item+'" width="90%" height="100%"></div>'
                 });
             });
             me.getMainView().push(thirdView);

@@ -3,7 +3,6 @@ Ext.define('here.view.publish.ThirdView',{
     xtype : 'thirdView',
     config : {
         title : '选择视频图片',
-        layout : 'vbox',
         scrollable: {
             direction: 'vertical',
             directionLock: true
@@ -11,7 +10,6 @@ Ext.define('here.view.publish.ThirdView',{
         items : [
             {
                 xtype : 'toolbar',
-                flex : 1,
                 docked : 'top',
                 items : [
                     {
