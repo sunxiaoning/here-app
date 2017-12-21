@@ -2,7 +2,7 @@ Ext.define('here.ux.BMap', {
     alternateClassName: 'bMap',
     extend: 'Ext.Container',
     xtype: 'bMap',
-    requires: ['Ext.util.Geolocation','Ext.Toast','Ext.JSON'],
+    requires: ['Ext.util.Geolocation','Ext.Toast','Ext.JSON','here.util.LocationUtil'],
     config: {
         //私有变量，地图对象
         map: null,
@@ -240,27 +240,10 @@ Ext.define('here.ux.BMap', {
     onLocate: function () {
         var me = this;
         var map = me.getMap();
+        var result = here.util.LocationUtil.getMyLocation();
 
-        // 使用百度地图SDK定位
-        if(typeof(baidumap_location) != 'undefined'){
-            
-            
-            // 进行定位 
-            baidumap_location.getCurrentPosition(function (result) {
-                var myLocation = new BMap.Point(result.longitude, result.latitude);
-
-                // 添加我的位置标注
-                me.addMyPoint(result.longitude, result.latitude);
-            }, function (error) {
-                Ext.toast(
-                    {
-                        message: '定位失败!',
-                        timeout: 200,
-                        docked : 'top'
-                    }
-                );
-            });
-        }
+        // 添加我的位置标注
+        me.addMyPoint(result.longitude, result.latitude);
     },
     //创建定位插件
     applyGeo: function (config) {

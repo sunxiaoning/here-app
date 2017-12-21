@@ -2,7 +2,7 @@ Ext.define('here.view.map.LocationViewMap', {
     extend: 'here.ux.BMap',
     xtype: 'locationViewMap',
     requires: [
-		'Ext.util.DelayedTask','Ext.Toast'
+		'Ext.util.DelayedTask','Ext.Toast','here.util.LocationUtil'
 	],
     config: {
         title: '地图',
@@ -35,16 +35,17 @@ Ext.define('here.view.map.LocationViewMap', {
     onTapMyMarker : function (me, marker) {
 
         // 获取我的位置
-        var myLocation = Ext.JSON.decode(window.localStorage.getItem("myLocation"),true);
+        var myLocation = here.util.LocationUtil.getMyLocation();
+       /* var myLocation = {
+            lng:116.404081,
+            lat:39.910098
+        };*/
         Ext.Msg.confirm("提示", "您的当前位置为：" + myLocation.addr + " " + myLocation.locationDescribe, function (buttonId) {
             if (buttonId == "yes") {
 
-                // 获取我的位置
-                var myLocation = Ext.JSON.decode(window.localStorage.getItem("myLocation"),true);
-
                 // 位置不存在，提交新的位置请求
                 Ext.Ajax.request({
-                    url: window.localStorage.getItem("serverUrl")+'/locationController/postNewLocation',
+                    url: window.localStorage.getItem("SERVER_URL")+'/locationController/postNewLocation',
                     useDefaultXhrHeader: false,
                     params: {
                         lng : myLocation.longitude,
@@ -72,5 +73,14 @@ Ext.define('here.view.map.LocationViewMap', {
     initMap : function(){
         var me = this;
         me.callParent();
+        var myLocation = here.util.LocationUtil.getMyLocation();
+        var center = {
+            lng:myLocation.longitude,
+            lat:myLocation.latitude
+        };
+        me.setCenter(center);
+
+        // 添加我的位置标注
+        me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
     }
 });

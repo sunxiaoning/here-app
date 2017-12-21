@@ -1,6 +1,6 @@
 Ext.define('here.controller.MenuTabController', {
     extend: 'Ext.app.Controller',
-    requires : [],
+    requires : ['here.util.LocationUtil'],
     config: {
         control: {
 
@@ -38,59 +38,34 @@ Ext.define('here.controller.MenuTabController', {
 
         // 获取位置点视图
         var locationView = me.getLocationViewMap();
-        if(typeof(baidumap_location) != 'undefined'){
+        var myLocation = here.util.LocationUtil.getMyLocation();
 
-            // 进行定位
-            baidumap_location.getCurrentPosition(function (result) {
 
-                //  存储我的位置
-                window.localStorage.setItem("myLocation",JSON.stringify(result));
-                var myLocation = {
-                    lng:result.longitude,
-                    lat:result.latitude
-                };
-                locationView.setCenter(myLocation);
-
-                // 添加我的位置标注
-                locationView.addMyPoint(locationView.getCenter().lng, locationView.getCenter().lat);
-
-                // 添加我的位置周边位置
-                Ext.Ajax.request({
-                    url: window.localStorage.getItem("serverUrl")+'/locationController/getNearbyLocationList',
-                    useDefaultXhrHeader: false,
-                    params: {
-                        lat : locationView.getCenter().lat,
-                        lng : locationView.getCenter().lng,
-                        radius : 1000
-                    },
-                    method : "POST",
-                    success: function(response){
-                        var responseJSON = Ext.JSON.decode(response.responseText,true);
-                        if(responseJSON.pointLocationDtoList){
-                            Ext.Array.each(responseJSON.pointLocationDtoList,function(item, index, length){
-                                if(item['lng'] != locationView.getCenter().lng || item['lat'] != locationView.getCenter().lat) {
-                                    locationView.addPoint(item['lng'], item['lat'], item, locationView, locationView.getMap());
-                                }
-                            });
+        // 添加我的位置周边位置
+        Ext.Ajax.request({
+            url: window.localStorage.getItem("SERVER_URL")+'/locationController/getNearbyLocationList',
+            useDefaultXhrHeader: false,
+            params: {
+                lng:myLocation.longitude,
+                lat:myLocation.latitude,
+                radius : 1000
+            },
+            method : "POST",
+            success: function(response){
+                var responseJSON = Ext.JSON.decode(response.responseText,true);
+                if(responseJSON.pointLocationDtoList){
+                    Ext.Array.each(responseJSON.pointLocationDtoList,function(item, index, length){
+                        if(item['lng'] != locationView.getCenter().lng || item['lat'] != locationView.getCenter().lat) {
+                            locationView.addPoint(item['lng'], item['lat'], item, locationView, locationView.getMap());
                         }
-                    },
-                    failure : function(response) {
-                        Ext.Msg.alert('提示', '加载周围点位置出错！', Ext.emptyFn);
+                    });
+                }
+            },
+            failure : function(response) {
+                Ext.Msg.alert('提示', '加载周围点位置出错！', Ext.emptyFn);
 
-                    }
-                });
-
-            }, function (error) {
-                // alert(JSON.stringify(error));
-                Ext.toast(
-                    {
-                        message: '定位失败!',
-                        timeout: 200,
-                        docked : 'top'
-                    }
-                );
-            });
-        }
+            }
+        });
 
     }
 });

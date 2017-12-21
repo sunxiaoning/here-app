@@ -1,6 +1,6 @@
 Ext.define('here.view.publish.FirstView',{
     extend : 'Ext.Panel',
-    requires: ['Ext.ActionSheet'],
+    requires: ['Ext.ActionSheet','here.view.map.LocationViewMap'],
     config : {
         title : '发布',
         iconCls : 'compose',
@@ -26,8 +26,7 @@ Ext.define('here.view.publish.FirstView',{
             },
             {
                 id : 'locationViewMap',
-                xtype : 'locationViewMap',
-                hidden : true
+                xtype : 'locationViewMap'
             },
             {
                 id: 'firstViewActionSheet',

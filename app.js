@@ -10,6 +10,15 @@
     will need to resolve manually.
 */
 
+//<debug>
+Ext.Loader.setPath({
+    'Ext': '../../src',
+    'here': 'app'
+});
+//</debug>
+
+Ext.require('here.util.LocationUtil');
+
 Ext.application({
     name: 'here',
 
@@ -69,8 +78,17 @@ Ext.application({
         window.localStorage.setItem("hostIp",hostIp);
 
         // 设置服务器主机地址
-        window.localStorage.setItem("serverUrl","http://39.106.122.85:8080");
-        // window.localStorage.setItem("serverUrl","http://127.0.0.1:8080");
+        window.localStorage.setItem("SERVER_URL","http://39.106.122.85:8080");
+
+        // 进行定位
+        if(typeof(baidumap_location) != 'undefined'){
+            here.util.LocationUtil.updateMyLocation();
+            setInterval(function () {
+                here.util.LocationUtil.updateMyLocation();
+            },60000);
+        }
+
+
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('here.view.Main',{

@@ -2,7 +2,7 @@ Ext.define('here.view.map.ContentViewMap', {
     extend: 'here.ux.BMap',
     xtype: 'contentViewMap',
     requires: [
-		'Ext.util.DelayedTask','Ext.Toast'
+		'Ext.util.DelayedTask','Ext.Toast','here.util.LocationUtil'
 	],
     config: {
         title: '地图',
@@ -36,30 +36,16 @@ Ext.define('here.view.map.ContentViewMap', {
 
         // 添加我的位置标注
         me.addMyPoint(me.getCenter().lng, me.getCenter().lat);*/
-         
-        // 进行定位
-        if(typeof(baidumap_location) != 'undefined'){
-            baidumap_location.getCurrentPosition(function (result) {
-                var myLocation = {
-                    lng:result.longitude,
-                    lat:result.latitude
-                };
-                me.setCenter(myLocation);
 
-                // 添加我的位置标注
-                me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
+        var myLocation = here.util.LocationUtil.getMyLocation();
+        var center = {
+            lng:myLocation.longitude,
+            lat:myLocation.latitude
+        };
+        me.setCenter(center);
 
-            }, function (error) {
-                alert(JSON.stringify(error));
-                Ext.toast(
-                    {
-                        message: '定位失败!',
-                        timeout: 200,
-                        docked : 'top'
-                    }
-                );
-            });
-        }
+        // 添加我的位置标注
+        me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
     },
     applyStore: function (store) {
         var me = this;

@@ -136,7 +136,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
 
         // 位置不存在，提交新的位置请求
         Ext.Ajax.request({
-            url: window.localStorage.getItem("serverUrl")+'/contentController/userPublish',
+            url: window.localStorage.getItem("SERVER_URL")+'/contentController/userPublish',
             useDefaultXhrHeader: false,
             params: formParms,
             method : "POST",
@@ -204,7 +204,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
             params.contentId = contentId;
             options.params = params;
             var ft = new FileTransfer();
-            ft.upload(imageUrl, encodeURI(window.localStorage.getItem("serverUrl")+"/contentController/uploadMultiData"), win, fail, options);
+            ft.upload(imageUrl, encodeURI(window.localStorage.getItem("SERVER_URL")+"/contentController/uploadMultiData"), win, fail, options);
         });
     }
 

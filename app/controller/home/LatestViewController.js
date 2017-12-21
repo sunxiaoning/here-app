@@ -1,6 +1,6 @@
 Ext.define('here.controller.home.LatestViewController', {
     extend: 'Ext.app.Controller',
-    requires : [],
+    requires : ['here.util.LocationUtil'],
     config: {
         control: {
             toggleButton : {
@@ -38,27 +38,12 @@ Ext.define('here.controller.home.LatestViewController', {
 
         // 获取信息列表视图
         var infoListView = me.getInfoListView();
-
-        // 使用百度地图SDK定位
-        if(typeof(baidumap_location) != 'undefined'){
-
-            // 进行定位
-            baidumap_location.getCurrentPosition(function (result) {
-                infoListView.getStore().getProxy().setExtraParams({
-                    lat : result.latitude,
-                    lng : result.longitude
-                });
-                infoListView.getStore().load();
-            }, function (error) {
-                Ext.toast(
-                    {
-                        message: '定位失败!',
-                        timeout: 200,
-                        docked : 'top'
-                    }
-                );
-            });
-        }
+        var result = here.util.LocationUtil.getMyLocation();
+        infoListView.getStore().getProxy().setExtraParams({
+            lat : result.latitude,
+            lng : result.longitude
+        });
+        infoListView.getStore().load();
     },
     loadInfoListFail : function(infoListProxy, response, operation, eOpts ){
         Ext.toast(
