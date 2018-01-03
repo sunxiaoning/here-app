@@ -11,6 +11,9 @@ Ext.define('here.controller.home.LatestViewController', {
             },
             infoListView : {
                 itemtap : "showInfoDetail"
+            },
+            locationInfoListView : {
+                itemtap : 'showInfoDetail'
             }
         },
         refs: {
@@ -18,14 +21,17 @@ Ext.define('here.controller.home.LatestViewController', {
             locationView : '#locationView',
             infoListView : '#infoListView',
             infoListProxy : "#infoListProxy",
+            locationInfoListView : 'locationInfoListView',
             mainView : "#mainView"
         }
     },
     toggleView : function(segmentbutton, button, isPressed, eOpts){
         var me = this;
         if(button.getId() == 'locationButton'){
-            me.getLocationView().show();
             me.getInfoListView().hide();
+            me.getLocationView().show();
+            me.getLocationView().onLocate();
+
         }
         else {
             me.getLocationView().hide();
@@ -55,8 +61,13 @@ Ext.define('here.controller.home.LatestViewController', {
         );
     },
     showInfoDetail : function( dataItem, index, target, record, e, eOpts ){
-        window.localStorage.setItem("infoListView.contentId",record.data.id);
         var infoDetail = Ext.widget("infoDetail");
+        infoDetail.getStore().getProxy().setExtraParams(
+            {
+                contentId : record.data.id
+            }
+        );
+        infoDetail.getStore().load();
         this.getMainView().push(infoDetail);
     }
 });

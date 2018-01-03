@@ -21,34 +21,67 @@ Ext.define('here.view.map.ContentViewMap', {
     
     // 点击坐标处理
     onTapMarker : function (me, marker) {
-        var infoWindow = new BMap.InfoWindow(marker.options.title);
-        marker.openInfoWindow(infoWindow);
+        var mainView =  Ext.ComponentQuery.query("#mainView")[0];
+        var locationInfoListView = Ext.widget('locationInfoListView');
+        locationInfoListView.setTitle(marker.options.title+" "+locationInfoListView.getTitle());
+        var myLocation = here.util.LocationUtil.getMyLocation();
+        locationInfoListView.getStore().getProxy().setExtraParams({
+            locationId : marker.options.id,
+            lat : myLocation.latitude,
+            lng : myLocation.longitude
+        });
+        locationInfoListView.getStore().load();
+        mainView.push(locationInfoListView);
     },
     initMap : function(){
         var me = this;
         me.callParent();
-
-        /*var myLocation = {
-            lng:116.404081,
-            lat:39.910098
-        };
-        me.setCenter(myLocation);
-
-        // 添加我的位置标注
-        me.addMyPoint(me.getCenter().lng, me.getCenter().lat);*/
-
         var myLocation = here.util.LocationUtil.getMyLocation();
         var center = {
             lng:myLocation.longitude,
             lat:myLocation.latitude
         };
         me.setCenter(center);
-
-        // 添加我的位置标注
-        me.addMyPoint(me.getCenter().lng, me.getCenter().lat);
+        me.onLocate();
     },
-    applyStore: function (store) {
+    onLocate : function () {
         var me = this;
         me.callParent();
+        me.loadNearbyLocation();
+    },
+
+    // 加载周边位置
+    loadNearbyLocation : function(){
+        var me = this;
+
+        var myLocation = here.util.LocationUtil.getMyLocation();
+
+
+        // 添加我的位置周边位置
+        Ext.Ajax.request({
+            url: window.localStorage.getItem("SERVER_URL")+'/locationController/getNearbyLocationList',
+            useDefaultXhrHeader: false,
+            params: {
+                lng:myLocation.longitude,
+                lat:myLocation.latitude,
+                radius : 5000
+            },
+            method : "POST",
+            success: function(response){
+                var responseJSON = Ext.JSON.decode(response.responseText,true);
+                if(responseJSON.pointLocationDtoList){
+                    Ext.Array.each(responseJSON.pointLocationDtoList,function(item, index, length){
+                        if(item['lng'] != myLocation.longitude || item['lat'] != myLocation.latitude) {
+                            me.addPoint(item['lng'], item['lat'], item, me, me.getMap());
+                        }
+                    });
+                }
+            },
+            failure : function(response) {
+                Ext.Msg.alert('提示', '加载周围点位置出错！', Ext.emptyFn);
+
+            }
+        });
+
     }
 });

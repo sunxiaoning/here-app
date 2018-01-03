@@ -32,6 +32,7 @@ Ext.application({
         'home.HomeContainer',
         'home.LatestView',
         'home.InfoListView',
+        'home.LocationInfoListView',
         'home.InfoDetail',
         'publish.FirstView',
         'publish.ThirdView',

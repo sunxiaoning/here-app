@@ -24,7 +24,7 @@ Ext.define('here.view.home.InfoDetail', {
                     read : "POST"
                 },
                 extraParams : {
-                    contentId : window.localStorage.getItem("infoListView.contentId")
+                    contentId : null
                 },
                 timeout : 10000,
                 url: window.localStorage.getItem('SERVER_URL')+"/contentController/getLatestPublishDetail",
@@ -34,7 +34,7 @@ Ext.define('here.view.home.InfoDetail', {
             }
         });
         me.setStore(store);
-        me.getStore().load();
+        // me.getStore().load();
         me.callParent();
     }
 });

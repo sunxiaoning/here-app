@@ -660,14 +660,17 @@ Ext.ClassManager.addNameAlternateMappings({
   "here.controller.MenuTabController": [],
   "here.controller.home.LatestViewController": [],
   "here.controller.publish.ContentPublishController": [],
+  "here.util.LocationUtil": [],
   "here.ux.BMap": [
     "bMap"
   ],
+  "here.ux.PullRefreshFn": [],
   "here.view.Main": [],
   "here.view.home.HomeContainer": [],
   "here.view.home.InfoDetail": [],
   "here.view.home.InfoListView": [],
   "here.view.home.LatestView": [],
+  "here.view.home.LocationInfoListView": [],
   "here.view.map.ContentViewMap": [],
   "here.view.map.LocationViewMap": [],
   "here.view.my.MyContainer": [],
@@ -1394,8 +1397,13 @@ Ext.ClassManager.addNameAliasMappings({
   "here.controller.MenuTabController": [],
   "here.controller.home.LatestViewController": [],
   "here.controller.publish.ContentPublishController": [],
+  "here.util.LocationUtil": [],
   "here.ux.BMap": [
     "widget.bMap"
+  ],
+  "here.ux.PullRefreshFn": [
+    "plugin.pullrefreshfn",
+    "widget.refreshFn"
   ],
   "here.view.Main": [
     "widget.main"
@@ -1411,6 +1419,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "here.view.home.LatestView": [
     "widget.latestView"
+  ],
+  "here.view.home.LocationInfoListView": [
+    "widget.locationInfoListView"
   ],
   "here.view.map.ContentViewMap": [
     "widget.contentViewMap"
