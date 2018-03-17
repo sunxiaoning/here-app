@@ -14,6 +14,9 @@ Ext.define('here.controller.home.LatestViewController', {
             },
             locationInfoListView : {
                 itemtap : 'showInfoDetail'
+            },
+            locationInfoListView : {
+                show : 'reLocate'
             }
         },
         refs: {
@@ -30,7 +33,6 @@ Ext.define('here.controller.home.LatestViewController', {
         if(button.getId() == 'locationButton'){
             me.getInfoListView().hide();
             me.getLocationView().show();
-            me.getLocationView().onLocate();
 
         }
         else {
@@ -69,5 +71,10 @@ Ext.define('here.controller.home.LatestViewController', {
         );
         infoDetail.getStore().load();
         this.getMainView().push(infoDetail);
+    },
+    reLocate : function(){
+        var me = this;
+        me.getLocationView().onLocate();
     }
+
 });
