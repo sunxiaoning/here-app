@@ -39,12 +39,15 @@ Ext.application({
         'publish.FourthView',
         'map.LocationViewMap',
         'map.ContentViewMap',
-        'my.MyContainer'
+        'my.MyContainer',
+        'login.LoginView',
+        'menu.MenuTabView'
     ],
     controllers: [
         'home.LatestViewController',
         'publish.ContentPublishController',
-        'MenuTabController'
+        'MenuTabController',
+        'login.LoginViewController'
     ],
 
     icon: {
@@ -82,6 +85,10 @@ Ext.application({
         window.localStorage.setItem("SERVER_URL","http://39.106.122.85:8080");
 
         // 进行定位
+        window.localStorage.setItem("MY_LOCATION",JSON.stringify({
+            longitude : 116.404081,
+            latitude : 39.910098
+        }));
         if(typeof(baidumap_location) != 'undefined'){
             here.util.LocationUtil.updateMyLocation();
             setInterval(function () {
@@ -89,12 +96,21 @@ Ext.application({
             },60000);
         }
 
-
+        Ext.Viewport.add(Ext.create('here.view.login.LoginView',{
+            id : 'loginView'
+        }));
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('here.view.Main',{
-            id : 'mainView'
+            id : 'mainView',
+            hidden : true
         }));
+
+
+        // Ext.Viewport.animateActiveItem(0,'fade');
+
+
+
         
 
         /*Ext.Viewport.addAfterListener('painted', function(){
