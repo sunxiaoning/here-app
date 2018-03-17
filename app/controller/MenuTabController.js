@@ -1,6 +1,6 @@
 Ext.define('here.controller.MenuTabController', {
     extend: 'Ext.app.Controller',
-    requires : ['here.util.LocationUtil'],
+    requires : [],
     config: {
         control: {
 
@@ -9,22 +9,26 @@ Ext.define('here.controller.MenuTabController', {
             }
         },
         refs: {
-
+            mainView : '#mainView',
             menuTabView : '#menuTabView'
-     }
+        }
     },
 
-    menuChange : function(menuTab, value, oldValue, eOpts ){
+    menuChange : function(menuTab, menuItem, oldValue, eOpts ){
         var me = this;
-        var menuItem = value.getItemId();
-        switch(menuItem) {
+
+        // change Title
+        var itemId = menuItem.getItemId();
+        switch(itemId) {
             case 'homeMenu':
                 // alert(1);
                 break;
             case 'publishMenu':
                 break;
             case 'myMenu':
-                // alert(3);
+                /*me.getMainView().push(Ext.create('here.view.login.LoginView',{
+                    id : 'loginView'
+                }));*/
                 break;
 
         }
