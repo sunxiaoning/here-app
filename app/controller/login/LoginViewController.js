@@ -1,6 +1,6 @@
 Ext.define('here.controller.login.LoginViewController', {
     extend: 'Ext.app.Controller',
-    requires : [],
+    requires : ['here.util.EncryptUtil','here.util.PostUtil'],
     config: {
         control: {
             confirmLoginButton : {
@@ -13,8 +13,15 @@ Ext.define('here.controller.login.LoginViewController', {
         }
     },
     confirmLogin : function () {
-        Ext.Viewport.animateActiveItem(1,'fade');
-
+        var me = this;
+        here.util.PostUtil.post('/userController/validateUserLogin', {
+                    userName: 'admin',
+                    password: here.util.EncryptUtil.encrypt("123456")
+                },
+                function (responseJSON) {
+                    Ext.Viewport.animateActiveItem(1,'fade');
+                }
+        );
     }
 
 });
