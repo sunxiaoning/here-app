@@ -2,7 +2,7 @@ Ext.define('here.view.map.LocationViewMap', {
     extend: 'here.ux.BMap',
     xtype: 'locationViewMap',
     requires: [
-		'Ext.util.DelayedTask','Ext.Toast','here.util.LocationUtil'
+		'Ext.util.DelayedTask','Ext.Toast','here.util.LocationUtil','here.util.PostUtil'
 	],
     config: {
         title: '地图',
@@ -93,32 +93,23 @@ Ext.define('here.view.map.LocationViewMap', {
 
         var myLocation = here.util.LocationUtil.getMyLocation();
 
-
-        // 添加我的位置周边位置
-        Ext.Ajax.request({
-            url: window.localStorage.getItem("SERVER_URL")+'/locationController/getNearbyLocationList',
-            useDefaultXhrHeader: false,
-            params: {
+        here.util.PostUtil.post('/locationController/getNearbyLocationList', {
                 lng:myLocation.longitude,
                 lat:myLocation.latitude,
                 radius : 1000
             },
-            method : "POST",
-            success: function(response){
-                var responseJSON = Ext.JSON.decode(response.responseText,true);
+            function (responseJSON) {
                 if(responseJSON.pointLocationDtoList){
-                    Ext.Array.each(responseJSON.pointLocationDtoList,function(item, index, length){
-                        if(item['lng'] != myLocation.longitude || item['lat'] != myLocation.latitude) {
-                            me.addPoint(item['lng'], item['lat'], item, me, me.getMap());
-                        }
-                    });
+                    if(responseJSON.pointLocationDtoList){
+                        Ext.Array.each(responseJSON.pointLocationDtoList,function(item, index, length){
+                            if(item['lng'] != myLocation.longitude || item['lat'] != myLocation.latitude) {
+                                me.addPoint(item['lng'], item['lat'], item, me, me.getMap());
+                            }
+                        });
+                    }
                 }
-            },
-            failure : function(response) {
-                Ext.Msg.alert('提示', '加载周围点位置出错！', Ext.emptyFn);
-
             }
-        });
+        );
 
     }
 });

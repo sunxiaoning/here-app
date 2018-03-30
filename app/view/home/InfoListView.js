@@ -56,7 +56,7 @@ Ext.define("here.view.home.InfoListView",{
                     lng : lng
                 },
                 timeout : 10000,
-                url: window.localStorage.getItem('SERVER_URL')+"/contentController/getLatestPublishList",
+                url: [SYSTEM_CONFIG.SERVER_URL,'/contentController/getLatestPublishList'].join(""),
                 reader: {
                     type: 'json',
                     rootProperty: 'pageResult.resultList',

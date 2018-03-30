@@ -1,7 +1,7 @@
 
 Ext.define('here.controller.publish.ContentPublishController', {
     extend: 'Ext.app.Controller',
-    requires : [],
+    requires : ['here.util.PostUtil'],
     config: {
         control: {
             showSecondViewButton : {
@@ -115,7 +115,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
         Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=locationId]")[0].setValue(parseInt(window.localStorage.getItem("locationId")));
 
         // 获取本机IP地址
-        Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=publishIp]")[0].setValue(window.localStorage.getItem('hostIp'));
+        Ext.ComponentQuery.query("#contentFormPanel hiddenfield[name=publishIp]")[0].setValue(SYSTEM_CONFIG.CLIENT_IP);
 
         // 跳转到内容编辑页面
         me.getMainView().push(fourthView);
@@ -134,14 +134,8 @@ Ext.define('here.controller.publish.ContentPublishController', {
         // 防止重复请求
         me.getSubmitContentButton().set('disabled',true);
 
-        // 位置不存在，提交新的位置请求
-        Ext.Ajax.request({
-            url: window.localStorage.getItem("SERVER_URL")+'/contentController/userPublish',
-            useDefaultXhrHeader: false,
-            params: formParms,
-            method : "POST",
-            success: function(response){
-                var responseJSON = Ext.JSON.decode(response.responseText, true);
+        here.util.PostUtil.post('/contentController/userPublish', formParms,
+            function (responseJSON) {
                 if(responseJSON.responseCode != 'SUCCESS'){
                     Ext.Msg.alert('提示', '发布失败，请稍后重试！', function(){
                         me.getSubmitContentButton().set('disabled',false);
@@ -174,15 +168,8 @@ Ext.define('here.controller.publish.ContentPublishController', {
                     // 返回上一页面
                     me.getMainView().pop(2);
                 });
-
-            },
-            failure : function(response) {
-                Ext.Msg.alert('提示', '发布失败，请稍后重试！', function(){
-                    me.getSubmitContentButton().set('disabled',false);
-                });
-
             }
-        });
+        );
     },
     uploadPhoto : function(imageUrl,contentId){
         window.resolveLocalFileSystemURL(imageUrl, function success(fileEntry) {
@@ -204,7 +191,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
             params.contentId = contentId;
             options.params = params;
             var ft = new FileTransfer();
-            ft.upload(imageUrl, encodeURI(window.localStorage.getItem("SERVER_URL")+"/contentController/uploadMultiData"), win, fail, options);
+            ft.upload(imageUrl, encodeURI([SYSTEM_CONFIG.SERVER_URL,"/contentController/uploadMultiData"].join("")), win, fail, options);
         });
     }
 

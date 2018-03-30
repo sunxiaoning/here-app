@@ -27,7 +27,7 @@ Ext.define('here.view.home.InfoDetail', {
                     contentId : null
                 },
                 timeout : 10000,
-                url: window.localStorage.getItem('SERVER_URL')+"/contentController/getLatestPublishDetail",
+                url: [SYSTEM_CONFIG.SERVER_URL,'/contentController/getLatestPublishDetail'].join(""),
                 reader: {
                     type: 'json'
                 }

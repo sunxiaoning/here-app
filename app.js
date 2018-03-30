@@ -73,16 +73,16 @@ Ext.application({
         Ext.fly('appLoadingIndicator').destroy();
 
         // 获取本机IP地址
-        var hostIp = window.localStorage.getItem("hostIp");
+        // var hostIp = SYSTEM_CONFIG.CLIENT_IP;
 
         // 清理storage缓存数据
         window.localStorage.clear();
 
         // 设置本机IP地址
-        window.localStorage.setItem("hostIp",hostIp);
+        // window.localStorage.setItem("hostIp",hostIp);
 
         // 设置服务器主机地址
-        window.localStorage.setItem("SERVER_URL","http://39.106.122.85:8080");
+       // window.localStorage.setItem("SERVER_URL","http://39.106.122.85:8080");
 
         // 进行定位
         window.localStorage.setItem("MY_LOCATION",JSON.stringify({
