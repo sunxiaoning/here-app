@@ -121,7 +121,8 @@
         "resources/images",
         "resources/icons",
         "resources/startup",
-        "resources/map"
+        "resources/map",
+        "resources/js"
     ],
 
     /**

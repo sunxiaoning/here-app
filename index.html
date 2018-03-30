@@ -54,14 +54,18 @@
     <script id="microloader" type="text/javascript" src=".sencha/app/microloader/development.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ataEWXnBYVkj54G29V7iC9XQ"></script>
     <script type="text/javascript" src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <script type="text/javascript" src="resources/js/Common.js"></script>
+    <script type="text/javascript" src="resources/js/CryptoJS.js"></script>
+
+
     <script>
 
         // 存储hostIp地址
         if(typeof(returnCitySN) == "undefined"){ // 防止断网情况
-            window.localStorage.setItem("hostIp",'127.0.0.1');
+            // window.localStorage.setItem("hostIp",'127.0.0.1');
         }
         else {
-            window.localStorage.setItem("hostIp",returnCitySN["cip"]);
+            SYSTEM_CONFIG['CLIENT_IP'] = returnCitySN["cip"];
         }
         
     </script>
