@@ -7,8 +7,7 @@ Ext.define('here.view.home.InfoDetail', {
               ],
     config: {
         title : '发布内容详情',
-        contentId : null,
-        itemTpl: '<div style="margin-top:5%;font-size:18px;font-weight:bold;"><span style="margin-left:5%;">{title}</span></div><div style="margin-top:5%;margin-left:5%;"><span style="font-size:12px;">{content}</span></div><div style="margin-top:5%;"><tpl for="url"><span style="margin-left:5%;"><img src="'+window.localStorage.getItem('SERVER_URL')+'/fileViewController/getFileDetail?fileUrl={.}" style="width:90%;height:90%;" />{publishUser}</span></tpl></div>'
+        contentId : null
     },
 
     //初始化
@@ -34,7 +33,21 @@ Ext.define('here.view.home.InfoDetail', {
             }
         });
         me.setStore(store);
+
+        var itemTpl =  ['<div style="margin-top:5%;font-size:18px;font-weight:bold;">',
+                            '<span style="margin-left:5%;">{title}</span>',
+                        '</div>',
+                        '<div style="margin-top:5%;margin-left:5%;">',
+                                '<span style="font-size:12px;">{content}</span>',
+                        '</div>',
+                        '<div style="margin-top:5%;">' +
+                            '<tpl for="url"><span style="margin-left:5%;">' +
+                                '<img src="',SYSTEM_CONFIG.SERVER_URL,'/fileViewController/getFileDetail?fileUrl={.}" style="width:90%;height:90%;" /></span>',
+                            '</tpl>' +
+                        '</div>'].join("");
+
         // me.getStore().load();
+        me.setItemTpl(itemTpl);
         me.callParent();
     }
 });
