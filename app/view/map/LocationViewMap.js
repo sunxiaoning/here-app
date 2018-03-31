@@ -43,29 +43,21 @@ Ext.define('here.view.map.LocationViewMap', {
         Ext.Msg.confirm("提示", "您的当前位置为：" + myLocation.addr + " " + myLocation.locationDescribe, function (buttonId) {
             if (buttonId == "yes") {
 
-                // 位置不存在，提交新的位置请求
-                Ext.Ajax.request({
-                    url: window.localStorage.getItem("SERVER_URL")+'/locationController/postNewLocation',
-                    useDefaultXhrHeader: false,
-                    params: {
+                here.util.PostUtil.post('/locationController/postNewLocation', {
                         lng : myLocation.longitude,
                         lat : myLocation.latitude,
                         title : myLocation.locationDescribe,
                         address : myLocation.addr
                     },
-                    method : "POST",
-                    success: function(response){
-                        var responseJSON = Ext.JSON.decode(response.responseText,true);
-                        if(responseJSON.locationId){
-                            window.localStorage.setItem("locationId",responseJSON.locationId);
-                            Ext.Msg.alert('提示', '位置已选择！', Ext.emptyFn);
+                    function (responseJSON) {
+                        if(responseJSON.pointLocationDtoList){
+                            if(responseJSON.locationId){
+                                window.localStorage.setItem("locationId",responseJSON.locationId);
+                                Ext.Msg.alert('提示', '位置已选择！', Ext.emptyFn);
+                            }
                         }
-                    },
-                    failure : function(response) {
-                        Ext.Msg.alert('提示', '提交我的点位置信息出错！', Ext.emptyFn);
-
                     }
-                });
+                );
             }
         });
     },
