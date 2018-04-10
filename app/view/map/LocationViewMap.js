@@ -50,11 +50,9 @@ Ext.define('here.view.map.LocationViewMap', {
                         address : myLocation.addr
                     },
                     function (responseJSON) {
-                        if(responseJSON.pointLocationDtoList){
-                            if(responseJSON.locationId){
-                                window.localStorage.setItem("locationId",responseJSON.locationId);
-                                Ext.Msg.alert('提示', '位置已选择！', Ext.emptyFn);
-                            }
+                        if(responseJSON.locationId){
+                            window.localStorage.setItem("locationId",responseJSON.locationId);
+                            Ext.Msg.alert('提示', '位置已选择！', Ext.emptyFn);
                         }
                     }
                 );
