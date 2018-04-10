@@ -4,7 +4,7 @@ Ext.define('here.util.PostUtil', {
 
     requires: [],
 
-    post : function (url,params,callback) {
+    post : function (url,params,callback,failure) {
         Ext.Ajax.request({
             url: [SYSTEM_CONFIG.SERVER_URL,url].join(""),
             useDefaultXhrHeader: false,
@@ -13,17 +13,35 @@ Ext.define('here.util.PostUtil', {
             success: function(response){
                 var responseJSON = Ext.JSON.decode(response.responseText, true);
                 if(responseJSON.responseCode != 'SUCCESS'){
-                    Ext.Msg.alert('提示', ['请求',url,'参数:',Ext.JSON.encode(params),'出错！'].join(""),Ext.emptyFn);
+                    if(typeof(failure) == "function"){
+                        failure(responseJSON);
+                    }
+                    else {
+                        window.plugins.toast.showShortBottom(['服务不可用，请稍后重试！错误代码：',responseJSON.responseCode].join(""));
+                    }
                 }
                 if(typeof(callback) == "function" ){
                     callback(responseJSON);
                 }
             },
             failure : function(response) {
-                Ext.Msg.alert('提示', ['请求',url,'参数:',Ext.JSON.encode(params),'出错！'].join(""),Ext.emptyFn);
-
+                if(typeof(failure) == "function" ){
+                    failure(response);
+                }
+                else {
+                    window.plugins.toast.showShortBottom('服务不可用，请稍后重试！错误代码：UNKNOWN');
+                }
             }
         });
+
+        postWithSign : function (url,params,callback,failure) {
+            post(url,params,function(responseJSON){
+
+            },function () {
+                
+            });
+
+        }
 
     }
 });

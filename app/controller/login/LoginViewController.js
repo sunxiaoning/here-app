@@ -14,12 +14,17 @@ Ext.define('here.controller.login.LoginViewController', {
     },
     confirmLogin : function () {
         var me = this;
+        var userName = Ext.ComponentQuery.query("#loginView textfield[name=userName]")[0].getValue();
+        var password = Ext.ComponentQuery.query("#loginView passwordfield[name=password]")[0].getValue();
         here.util.PostUtil.post('/userController/validateUserLogin', {
-                    userName: 'admin',
-                    password: here.util.EncryptUtil.encrypt("123456")
+                    userName: userName,
+                    password: here.util.EncryptUtil.encrypt(password)
                 },
                 function (responseJSON) {
                     Ext.Viewport.animateActiveItem(1,'fade');
+                },
+                function () {
+                    
                 }
         );
     }

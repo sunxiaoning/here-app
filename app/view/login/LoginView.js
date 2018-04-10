@@ -21,7 +21,7 @@ Ext.define('here.view.login.LoginView',{
                 label: '用户名'
             },
             {
-                xtype: 'textfield',
+                xtype: 'passwordfield',
                 name: 'password',
                 label: '密码'
             },
