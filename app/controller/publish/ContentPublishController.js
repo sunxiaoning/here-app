@@ -134,7 +134,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
         // 防止重复请求
         me.getSubmitContentButton().set('disabled',true);
 
-        here.util.PostUtil.post('/contentController/userPublish', formParms,
+        here.util.PostUtil.postWithSign('/contentController/userPublish', formParms,
             function (responseJSON) {
                 if(responseJSON.responseCode != 'SUCCESS'){
                     Ext.Msg.alert('提示', '发布失败，请稍后重试！', function(){
@@ -168,7 +168,8 @@ Ext.define('here.controller.publish.ContentPublishController', {
                     // 返回上一页面
                     me.getMainView().pop(2);
                 });
-            }
+            },
+            null
         );
     },
     uploadPhoto : function(imageUrl,contentId){

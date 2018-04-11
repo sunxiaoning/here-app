@@ -21,11 +21,10 @@ Ext.define('here.controller.login.LoginViewController', {
                     password: here.util.EncryptUtil.encrypt(password)
                 },
                 function (responseJSON) {
+                    SYSTEM_CONFIG['token'] = responseJSON.token;
                     Ext.Viewport.animateActiveItem(1,'fade');
                 },
-                function () {
-                    
-                }
+                null
         );
     }
 

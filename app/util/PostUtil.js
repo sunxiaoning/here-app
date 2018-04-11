@@ -33,15 +33,14 @@ Ext.define('here.util.PostUtil', {
                 }
             }
         });
-
-        postWithSign : function (url,params,callback,failure) {
-            post(url,params,function(responseJSON){
-
-            },function () {
-                
-            });
-
-        }
-
+    },
+    postWithSign : function (url,params,callback,failure) {
+        var me = this;
+        me.post(SYSTEM_CONFIG.SIGN_URL,params,function(responseJSON){
+            params['sign'] = responseJSON.sign;
+            params['timestamp'] = Ext.Date.format(Ext.Date.now(),'Y-m-d H:i:s');
+            params['token'] = SYSTEM_CONFIG.TOKEN;
+            post(url,params,callback,failure);
+        });
     }
 });
