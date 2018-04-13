@@ -29,18 +29,20 @@ Ext.define('here.util.PostUtil', {
                     failure(response);
                 }
                 else {
-                    window.plugins.toast.showShortBottom('服务不可用，请稍后重试！错误代码：UNKNOWN');
+                    window.plugins.toast.showShortBottom(['服务不可用，请稍后重试！错误代码：',response.status].join(""));
                 }
             }
         });
     },
     postWithSign : function (url,params,callback,failure) {
         var me = this;
-        me.post(SYSTEM_CONFIG.SIGN_URL,params,function(responseJSON){
-            params['sign'] = responseJSON.sign;
-            params['timestamp'] = Ext.Date.format(Ext.Date.now(),'Y-m-d H:i:s');
-            params['token'] = SYSTEM_CONFIG.TOKEN;
-            post(url,params,callback,failure);
-        });
+        var signParams = params;
+        signParams['token'] = SYSTEM_CONFIG.TOKEN;
+        me.post(SYSTEM_CONFIG.SIGN_URL,signParams,function(responseJSON){
+            var postParams = signParams;
+            postParams['sign'] = responseJSON.sign;
+            postParams['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
+            me.post(url,postParams,callback,failure);
+        },failure);
     }
 });
