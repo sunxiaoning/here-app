@@ -21,7 +21,7 @@ Ext.define('here.controller.login.LoginViewController', {
                     password: here.util.EncryptUtil.encrypt(password)
                 },
                 function (responseJSON) {
-                    SYSTEM_CONFIG['token'] = responseJSON.token;
+                    SYSTEM_CONFIG['TOKEN'] = responseJSON.token;
                     Ext.Viewport.animateActiveItem(1,'fade');
                 },
                 null
