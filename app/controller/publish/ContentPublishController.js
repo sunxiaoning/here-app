@@ -190,6 +190,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
             }
             var params = {};
             params.contentId = contentId;
+
             options.params = params;
             var ft = new FileTransfer();
             ft.upload(imageUrl, encodeURI([SYSTEM_CONFIG.SERVER_URL,"/contentController/uploadMultiData"].join("")), win, fail, options);

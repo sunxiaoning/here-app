@@ -4,6 +4,13 @@ Ext.define('here.util.PostUtil', {
 
     requires: [],
 
+    /**
+     * POST 请求
+     * @param url
+     * @param params
+     * @param callback
+     * @param failure
+     */
     post : function (url,params,callback,failure) {
         Ext.Ajax.request({
             url: [SYSTEM_CONFIG.SERVER_URL,url].join(""),
@@ -19,6 +26,7 @@ Ext.define('here.util.PostUtil', {
                     else {
                         window.plugins.toast.showShortBottom(['服务不可用，请稍后重试！错误代码：',responseJSON.responseCode].join(""));
                     }
+                    return;
                 }
                 if(typeof(callback) == "function" ){
                     callback(responseJSON);
@@ -34,15 +42,37 @@ Ext.define('here.util.PostUtil', {
             }
         });
     },
-    postWithSign : function (url,params,callback,failure) {
+
+    /**
+     * 请求参数加签名
+     * @param params
+     * @param callback
+     * @param failure
+     */
+    sign : function (params,callback,failure) {
         var me = this;
         var signParams = params;
         signParams['token'] = SYSTEM_CONFIG.TOKEN;
-        me.post(SYSTEM_CONFIG.SIGN_URL,signParams,function(responseJSON){
-            var postParams = signParams;
-            postParams['sign'] = responseJSON.sign;
-            postParams['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
-            me.post(url,postParams,callback,failure);
+        signParams['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
+        me.post(SYSTEM_CONFIG.SIGN_URL,signParams,function (responseJSON) {
+            var signResultParams = signParams;
+            signResultParams['sign'] = responseJSON.sign;
+            callback(signResultParams);
         },failure);
+    },
+
+    /**
+     * 请求参数签名并发送POST请求
+     * @param url
+     * @param params
+     * @param callback
+     * @param failure
+     */
+    postWithSign : function (url,params,callback,failure) {
+        var me = this;
+        me.sign(params,function (signResultParams) {
+            me.post(url,signResultParams,callback,failure);
+        },failure);
+
     }
 });

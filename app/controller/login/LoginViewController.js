@@ -24,7 +24,9 @@ Ext.define('here.controller.login.LoginViewController', {
                     SYSTEM_CONFIG['TOKEN'] = responseJSON.token;
                     Ext.Viewport.animateActiveItem(1,'fade');
                 },
-                null
+                function () {
+                    window.plugins.toast.showShortBottom('用户名或密码错误，登录失败！');
+                }
         );
     }
 
