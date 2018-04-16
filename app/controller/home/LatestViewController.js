@@ -55,11 +55,11 @@ Ext.define('here.controller.home.LatestViewController', {
             lng : result.longitude
         },function (signParamsResult) {
             params = signParamsResult;
+            infoListView.getStore().getProxy().setExtraParams(params);
+            infoListView.getStore().load();
         },function () {
             window.plugins.toast.showShortBottom('信息列表加签名出错！');
         });
-        infoListView.getStore().getProxy().setExtraParams(params);
-        infoListView.getStore().load();
     },
     loadInfoListFail : function(infoListProxy, response, operation, eOpts ){
         Ext.toast(
