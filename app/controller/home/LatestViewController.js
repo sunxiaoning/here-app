@@ -49,11 +49,13 @@ Ext.define('here.controller.home.LatestViewController', {
         var result = here.util.LocationUtil.getMyLocation();
 
         // 请求参数签名
-        var params = {};
-        here.util.PostUtil.sign({
+        var params = {
             lat : result.latitude,
             lng : result.longitude
-        },function (signParamsResult) {
+        };
+
+        alert(JSON.stringify(infoListView.getStore().getParams()));
+        here.util.PostUtil.sign(params,function (signParamsResult) {
             params = signParamsResult;
             infoListView.getStore().getProxy().setExtraParams(params);
             infoListView.getStore().load();

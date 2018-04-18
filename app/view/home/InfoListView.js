@@ -66,8 +66,6 @@ Ext.define("here.view.home.InfoListView",{
         });
         me.setStore(store);
         me.callParent();
-        me.getStore().load();
-        
     }
    
 });
