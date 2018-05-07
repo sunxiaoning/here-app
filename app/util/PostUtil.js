@@ -51,14 +51,23 @@ Ext.define('here.util.PostUtil', {
      */
     sign : function (params,callback,failure) {
         var me = this;
-        var signParams = params;
-        signParams['token'] = SYSTEM_CONFIG.TOKEN;
-        signParams['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
-        me.post(SYSTEM_CONFIG.SIGN_URL,signParams,function (responseJSON) {
-            var signResultParams = signParams;
-            signResultParams['sign'] = responseJSON.sign;
-            callback(signResultParams);
-        },failure);
+        me.post(SYSTEM_CONFIG.GET_RSA_KEY_PAIR_URL,function (keyPariJson) {
+            var signParams = params;
+            signParams['signKey'] = keyPariJson.privateKey;
+            signParams['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
+            var paramsJson = params;
+            paramsJson['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
+            paramsJson['clientRsaPublicKey'] = keyPariJson.publicKey;
+            paramsJson['token'] = SYSTEM_CONFIG.TOKEN;
+            signParams['paramsJson'] = Ext.JSON.encode(paramsJson);
+            me.post(SYSTEM_CONFIG.SIGN_URL,signParams,function (responseJSON) {
+                var signResultParams = paramsJson;
+                signResultParams['sign'] = responseJSON.sign;
+                callback(signResultParams);
+            },failure);
+
+        });
+
     },
 
     /**
