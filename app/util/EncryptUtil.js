@@ -6,11 +6,15 @@ Ext.define('here.util.EncryptUtil', {
 
     encrypt : function(word,callback){
         here.util.PostUtil.post(SYSTEM_CONFIG.GET_RSA_KEY_PAIR_URL,function (keyPairJson) {
-            var key = CryptoJS.enc.Utf8.parse();
+            here.util.PostUtil.postWithSign(SYSTEM_CONFIG.GET_AES_KEY_URL,{
+            },function (responseJson) {
 
-            var srcs = CryptoJS.enc.Utf8.parse(word);
-            var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
-            callback(encrypted.toString());
+                var key = CryptoJS.enc.Utf8.parse(keyPairJson.);
+                var srcs = CryptoJS.enc.Utf8.parse(word);
+                var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
+                callback(encrypted.toString());
+            })
+
         });
     },
     decrypt : function(word){
