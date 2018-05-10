@@ -12,6 +12,11 @@ Ext.define('here.util.PostUtil', {
      * @param failure
      */
     post : function (url,params,callback,failure) {
+        if(!params){
+            params = {
+                timeStamp : Ext.Date.format(new Date(),'Y-m-d H:i:s')
+            }
+        }
         Ext.Ajax.request({
             url: [SYSTEM_CONFIG.SERVER_URL,url].join(""),
             useDefaultXhrHeader: false,
@@ -54,9 +59,7 @@ Ext.define('here.util.PostUtil', {
         me.post(SYSTEM_CONFIG.GET_RSA_KEY_PAIR_URL,function (keyPariJson) {
             var signParams = params;
             signParams['signKey'] = keyPariJson.privateKey;
-            signParams['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
             var paramsJson = params;
-            paramsJson['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
             paramsJson['clientRsaPublicKey'] = keyPariJson.publicKey;
             paramsJson['token'] = SYSTEM_CONFIG.TOKEN;
             signParams['paramsJson'] = Ext.JSON.encode(paramsJson);
@@ -65,7 +68,6 @@ Ext.define('here.util.PostUtil', {
                 signResultParams['sign'] = responseJSON.sign;
                 callback(signResultParams);
             },failure);
-
         });
 
     },
@@ -82,6 +84,5 @@ Ext.define('here.util.PostUtil', {
         me.sign(params,function (signResultParams) {
             me.post(url,signResultParams,callback,failure);
         },failure);
-
     }
 });
