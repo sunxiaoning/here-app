@@ -53,7 +53,7 @@ Ext.define('here.util.PostUtil', {
     sign : function (params,callback,failure) {
         var me = this;
         me.post(SYSTEM_CONFIG.GET_RSA_KEY_PAIR_URL,{},function (keyPariJson) {
-            var signParams = params;
+            var signParams = {};
             signParams['signKey'] = keyPariJson.privateKey;
             var paramsJson = params;
             paramsJson['clientRsaPublicKey'] = keyPariJson.publicKey;
