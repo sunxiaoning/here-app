@@ -12,11 +12,7 @@ Ext.define('here.util.PostUtil', {
      * @param failure
      */
     post : function (url,params,callback,failure) {
-        if(!params){
-            params = {
-                timeStamp : Ext.Date.format(new Date(),'Y-m-d H:i:s')
-            }
-        }
+        params['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
         Ext.Ajax.request({
             url: [SYSTEM_CONFIG.SERVER_URL,url].join(""),
             useDefaultXhrHeader: false,
@@ -56,7 +52,7 @@ Ext.define('here.util.PostUtil', {
      */
     sign : function (params,callback,failure) {
         var me = this;
-        me.post(SYSTEM_CONFIG.GET_RSA_KEY_PAIR_URL,function (keyPariJson) {
+        me.post(SYSTEM_CONFIG.GET_RSA_KEY_PAIR_URL,{},function (keyPariJson) {
             var signParams = params;
             signParams['signKey'] = keyPariJson.privateKey;
             var paramsJson = params;
