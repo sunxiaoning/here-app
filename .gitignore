@@ -1,6 +1,8 @@
 build/
 .idea/
+cordova/
 .sencha/
 resources/sass
 touch/
-cordova/
+bootstrap.js
+

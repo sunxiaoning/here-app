@@ -659,8 +659,11 @@ Ext.ClassManager.addNameAlternateMappings({
   ],
   "here.controller.MenuTabController": [],
   "here.controller.home.LatestViewController": [],
+  "here.controller.login.LoginViewController": [],
   "here.controller.publish.ContentPublishController": [],
+  "here.util.EncryptUtil": [],
   "here.util.LocationUtil": [],
+  "here.util.PostUtil": [],
   "here.ux.BMap": [
     "bMap"
   ],
@@ -671,8 +674,10 @@ Ext.ClassManager.addNameAlternateMappings({
   "here.view.home.InfoListView": [],
   "here.view.home.LatestView": [],
   "here.view.home.LocationInfoListView": [],
+  "here.view.login.LoginView": [],
   "here.view.map.ContentViewMap": [],
   "here.view.map.LocationViewMap": [],
+  "here.view.menu.MenuTabView": [],
   "here.view.my.MyContainer": [],
   "here.view.publish.FirstView": [],
   "here.view.publish.FourthView": [],
@@ -1396,8 +1401,11 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.viewport.WindowsPhone": [],
   "here.controller.MenuTabController": [],
   "here.controller.home.LatestViewController": [],
+  "here.controller.login.LoginViewController": [],
   "here.controller.publish.ContentPublishController": [],
+  "here.util.EncryptUtil": [],
   "here.util.LocationUtil": [],
+  "here.util.PostUtil": [],
   "here.ux.BMap": [
     "widget.bMap"
   ],
@@ -1423,11 +1431,17 @@ Ext.ClassManager.addNameAliasMappings({
   "here.view.home.LocationInfoListView": [
     "widget.locationInfoListView"
   ],
+  "here.view.login.LoginView": [
+    "widget.loginView"
+  ],
   "here.view.map.ContentViewMap": [
     "widget.contentViewMap"
   ],
   "here.view.map.LocationViewMap": [
     "widget.locationViewMap"
+  ],
+  "here.view.menu.MenuTabView": [
+    "widget.menuTabView"
   ],
   "here.view.my.MyContainer": [
     "widget.myContainer"
