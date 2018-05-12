@@ -9,6 +9,30 @@
   "installed_plugins": {
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "com.domain.here"
+    },
+    "cordova-plugin-dialogs": {
+      "PACKAGE_NAME": "com.domain.here"
+    },
+    "cordova-plugin-camera": {
+      "PACKAGE_NAME": "com.domain.here"
+    },
+    "cordova-plugin-file-transfer": {
+      "PACKAGE_NAME": "com.domain.here"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "com.domain.here"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "com.domain.here"
+    },
+    "cordova-plugin-x-toast": {
+      "PACKAGE_NAME": "com.domain.here"
+    },
+    "cordova-plugin-baidumaplocation": {
+      "ANDROID_KEY": "3QpEGgAHh81vHVWWq6yaZmnabGNhc9FE",
+      "IOS_KEY": "<API_KEY_IOS>",
+      "IOS_LOCATION_DESC": "请点击'好'以允许访问。",
+      "PACKAGE_NAME": "com.domain.here"
     }
   },
   "dependent_plugins": {}
