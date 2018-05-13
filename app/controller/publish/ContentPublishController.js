@@ -136,7 +136,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
         // 防止重复请求
         me.getSubmitContentButton().set('disabled',true);
 
-        here.util.PostUtil.postWithSign('/contentController/userPublish', formParms,
+        here.util.PostUtil.postWithSign('/contentGrpcController/userPublish', formParms,
             function (responseJSON) {
                 if(responseJSON.responseCode != 'SUCCESS'){
                     Ext.Msg.alert('提示', '发布失败，请稍后重试！', function(){
@@ -195,7 +195,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
             here.util.PostUtil.sign(params,function (signParamsResult) {
                 options.params = signParamsResult;
                 var ft = new FileTransfer();
-                ft.upload(imageUrl, encodeURI([SYSTEM_CONFIG.SERVER_URL,"/contentController/uploadMultiData"].join("")), win, fail, options);
+                ft.upload(imageUrl, encodeURI([SYSTEM_CONFIG.SERVER_URL,"/contentGrpcController/uploadMultiData"].join("")), win, fail, options);
             },function () {
                 window.plugins.toast.showShortBottom('信息列表加签名出错！');
             });

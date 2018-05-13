@@ -46,7 +46,7 @@ Ext.define('here.view.map.LocationLocationMapView', {
         Ext.Msg.confirm("提示", "您的当前位置为：" + myLocation.addr + " " + myLocation.locationDescribe, function (buttonId) {
             if (buttonId == "yes") {
 
-                here.util.PostUtil.postWithSign('/locationController/postNewLocation', {
+                here.util.PostUtil.postWithSign('/locationGrpcController/postNewLocation', {
                         lng : myLocation.longitude,
                         lat : myLocation.latitude,
                         title : myLocation.locationDescribe,
@@ -87,7 +87,7 @@ Ext.define('here.view.map.LocationLocationMapView', {
 
         var myLocation = here.util.LocationUtil.getMyLocation();
 
-        here.util.PostUtil.postWithSign('/locationController/getNearbyLocationList', {
+        here.util.PostUtil.postWithSign('/locationGrpcController/getNearbyLocationList', {
                 lng:myLocation.longitude,
                 lat:myLocation.latitude,
                 radius : 1000

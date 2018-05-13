@@ -26,7 +26,7 @@ Ext.define('here.view.home.InfoDetail', {
                     contentId : null
                 },
                 timeout : 10000,
-                url: [SYSTEM_CONFIG.SERVER_URL,'/contentController/getLatestPublishDetail'].join(""),
+                url: [SYSTEM_CONFIG.SERVER_URL,'/contentGrpcController/getLatestPublishDetail'].join(""),
                 reader: {
                     type: 'json'
                 }

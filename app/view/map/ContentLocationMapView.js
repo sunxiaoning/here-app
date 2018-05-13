@@ -59,7 +59,7 @@ Ext.define('here.view.map.ContentLocationMapView', {
 
         var myLocation = here.util.LocationUtil.getMyLocation();
 
-        here.util.PostUtil.postWithSign('/locationController/getNearbyLocationList', {
+        here.util.PostUtil.postWithSign('/locationGrpcController/getNearbyLocationList', {
                 lng:myLocation.longitude,
                 lat:myLocation.latitude,
                 radius : 5000

@@ -61,7 +61,7 @@ Ext.define("here.view.home.LocationInfoListView",{
                     lng : lng
                 },
                 timeout : 10000,
-                url: [SYSTEM_CONFIG.SERVER_URL,'/contentController/getLatestPublishContentListByLocationId'].join(""),
+                url: [SYSTEM_CONFIG.SERVER_URL,'/contentGrpcController/getLatestPublishContentListByLocationId'].join(""),
                 reader: {
                     type: 'json',
                     rootProperty: 'pageResult.resultList',

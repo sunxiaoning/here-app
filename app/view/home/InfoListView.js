@@ -59,7 +59,7 @@ Ext.define("here.view.home.InfoListView",{
                     lng : lng
                 },
                 timeout : 10000,
-                url: [SYSTEM_CONFIG.SERVER_URL,'/contentController/getLatestPublishList'].join(""),
+                url: [SYSTEM_CONFIG.SERVER_URL,'/contentGrpcController/getLatestPublishList'].join(""),
                 reader: {
                     type: 'json',
                     rootProperty: 'pageResult.resultList',
