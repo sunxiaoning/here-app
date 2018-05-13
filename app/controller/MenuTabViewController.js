@@ -1,4 +1,7 @@
-Ext.define('here.controller.MenuTabController', {
+/**
+ * 程序菜单控制器
+ */
+Ext.define('here.controller.MenuTabViewController', {
     extend: 'Ext.app.Controller',
     requires : [],
     config: {

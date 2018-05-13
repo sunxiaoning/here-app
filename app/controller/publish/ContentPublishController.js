@@ -1,4 +1,6 @@
-
+/**
+ * 内容发布控制器
+ */
 Ext.define('here.controller.publish.ContentPublishController', {
     extend: 'Ext.app.Controller',
     requires : ['here.util.PostUtil'],

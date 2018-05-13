@@ -30,7 +30,7 @@ Ext.define('here.controller.home.LatestViewController', {
     },
     toggleView : function(segmentbutton, button, isPressed, eOpts){
         var me = this;
-        if(button.getId() == 'locationButton'){
+        if(button.getId() == 'locationViewButton'){
             me.getInfoListView().hide();
             me.getLocationView().show();
 

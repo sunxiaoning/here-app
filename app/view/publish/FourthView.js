@@ -1,3 +1,6 @@
+/**
+ * 内容发布第三步文本内容及文本内容视图，提交发布
+ */
 Ext.define('here.view.publish.FourthView',{
     extend : 'Ext.Panel',
     xtype : 'fourthView',

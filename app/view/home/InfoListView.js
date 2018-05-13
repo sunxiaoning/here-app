@@ -1,3 +1,6 @@
+/**
+ * 首页 最新发布 内容视图
+ */
 Ext.define("here.view.home.InfoListView",{
     extend : 'Ext.List',
     xtype : 'infoListView',

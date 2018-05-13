@@ -1,6 +1,9 @@
-Ext.define('here.view.map.ContentViewMap', {
+/**
+ * 内容位置视图 在地图上展现发布的内容视图
+ */
+Ext.define('here.view.map.ContentLocationMapView', {
     extend: 'here.ux.BMap',
-    xtype: 'contentViewMap',
+    xtype: 'contentLocationMapView',
     requires: [
 		'Ext.util.DelayedTask','Ext.Toast','here.util.LocationUtil','here.util.PostUtil'
 	],

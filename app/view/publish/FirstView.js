@@ -1,6 +1,9 @@
+/**
+ * 内容发布第一个视图 选择你的当前位置视图
+ */
 Ext.define('here.view.publish.FirstView',{
     extend : 'Ext.Panel',
-    requires: ['Ext.ActionSheet','here.view.map.LocationViewMap'],
+    requires: ['Ext.ActionSheet','here.view.map.LocationLocationMapView'],
     config : {
         title : '发布',
         iconCls : 'compose',
@@ -25,8 +28,8 @@ Ext.define('here.view.publish.FirstView',{
                 ]
             },
             {
-                id : 'locationViewMap',
-                xtype : 'locationViewMap'
+                id : 'locationLocationMapView',
+                xtype : 'locationLocationMapView'
             },
             {
                 id: 'firstViewActionSheet',

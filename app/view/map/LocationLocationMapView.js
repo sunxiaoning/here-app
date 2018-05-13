@@ -1,6 +1,9 @@
-Ext.define('here.view.map.LocationViewMap', {
+/**
+ * 位置位置视图 在地图展示周边的位置标注
+ */
+Ext.define('here.view.map.LocationLocationMapView', {
     extend: 'here.ux.BMap',
-    xtype: 'locationViewMap',
+    xtype: 'locationLocationMapView',
     requires: [
 		'Ext.util.DelayedTask','Ext.Toast','here.util.LocationUtil','here.util.PostUtil'
 	],

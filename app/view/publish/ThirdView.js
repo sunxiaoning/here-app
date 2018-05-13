@@ -1,3 +1,6 @@
+/**
+ * 内容发布第二个视图选择图片视频
+ */
 Ext.define('here.view.publish.ThirdView',{
     extend : 'Ext.Panel',
     xtype : 'thirdView',

@@ -1,3 +1,6 @@
+/**
+ * 点击位置点查看此位置的发布内容视图
+ */
 Ext.define("here.view.home.LocationInfoListView",{
     extend : 'Ext.List',
     xtype : 'locationInfoListView',

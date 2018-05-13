@@ -1,3 +1,6 @@
+/**
+ * 登录视图
+ */
 Ext.define('here.view.login.LoginView',{
     extend : 'Ext.form.Panel',
     xtype : 'loginView',

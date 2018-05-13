@@ -29,7 +29,7 @@ Ext.application({
     views: [
         'Main',
         'Main',
-        'home.HomeContainer',
+        'home.HomeMenuView',
         'home.LatestView',
         'home.InfoListView',
         'home.LocationInfoListView',
@@ -37,8 +37,8 @@ Ext.application({
         'publish.FirstView',
         'publish.ThirdView',
         'publish.FourthView',
-        'map.LocationViewMap',
-        'map.ContentViewMap',
+        'map.LocationLocationMapView',
+        'map.ContentLocationMapView',
         'my.MyContainer',
         'login.LoginView',
         'menu.MenuTabView'
@@ -46,7 +46,7 @@ Ext.application({
     controllers: [
         'home.LatestViewController',
         'publish.ContentPublishController',
-        'MenuTabController',
+        'MenuTabViewController',
         'login.LoginViewController'
     ],
 
