@@ -33,7 +33,7 @@ Ext.define('here.view.home.InfoDetail', {
             }
         });
         me.setStore(store);
-
+        var restApiParams = here.util.PostUtil.getRestApiParams();
         var itemTpl =  ['<div style="margin-top:5%;font-size:18px;font-weight:bold;">',
                             '<span style="margin-left:5%;">{title}</span>',
                         '</div>',
@@ -42,11 +42,10 @@ Ext.define('here.view.home.InfoDetail', {
                         '</div>',
                         '<div style="margin-top:5%;">' +
                             '<tpl for="url"><span style="margin-left:5%;">' +
-                                '<img src="',SYSTEM_CONFIG.SERVER_URL,'/fileViewController/getFileDetail?fileUrl={.}" style="width:90%;height:90%;" /></span>',
+                                '<img src="',SYSTEM_CONFIG.SERVER_URL,'/fileViewController/getFileDetail?fileUrl={.}&&token=',encodeURIComponent(restApiParams['token']),'&&timestamp=',restApiParams['timestamp'],'" style="width:90%;height:90%;" /></span>',
                             '</tpl>' +
                         '</div>'].join("");
 
-        // me.getStore().load();
         me.setItemTpl(itemTpl);
         me.callParent();
     }

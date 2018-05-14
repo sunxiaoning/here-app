@@ -136,7 +136,7 @@ Ext.define('here.controller.publish.ContentPublishController', {
         // 防止重复请求
         me.getSubmitContentButton().set('disabled',true);
 
-        here.util.PostUtil.postWithSign('/contentGrpcController/userPublish', formParms,
+        here.util.PostUtil.post('/contentGrpcController/userPublish', formParms,
             function (responseJSON) {
                 if(responseJSON.responseCode != 'SUCCESS'){
                     Ext.Msg.alert('提示', '发布失败，请稍后重试！', function(){
@@ -183,7 +183,6 @@ Ext.define('here.controller.publish.ContentPublishController', {
             var fail = function (error) {                                           
                 // alert("An error has occurred: Code = " + error.code+"upload error source " + error.source+"upload error target " + error.target);
             }
-            
             var options = new FileUploadOptions();
             options.fileKey="requestMultiData";
             options.fileName = fileEntry.name;
@@ -192,13 +191,9 @@ Ext.define('here.controller.publish.ContentPublishController', {
             }
             var params = {};
             params.contentId = contentId;
-            here.util.PostUtil.sign(params,function (signParamsResult) {
-                options.params = signParamsResult;
-                var ft = new FileTransfer();
-                ft.upload(imageUrl, encodeURI([SYSTEM_CONFIG.SERVER_URL,"/contentGrpcController/uploadMultiData"].join("")), win, fail, options);
-            },function () {
-                window.plugins.toast.showShortBottom('信息列表加签名出错！');
-            });
+            options.params = here.util.PostUtil.getRestApiParams(params);
+            var ft = new FileTransfer();
+            ft.upload(imageUrl, encodeURI([SYSTEM_CONFIG.SERVER_URL,"/contentGrpcController/uploadMultiData"].join("")), win, fail, options);
         });
     }
 

@@ -53,15 +53,8 @@ Ext.define('here.controller.home.LatestViewController', {
             lat : result.latitude,
             lng : result.longitude
         };
-
-        alert(JSON.stringify(infoListView.getStore().getParams()));
-        here.util.PostUtil.sign(params,function (signParamsResult) {
-            params = signParamsResult;
-            infoListView.getStore().getProxy().setExtraParams(params);
-            infoListView.getStore().load();
-        },function () {
-            window.plugins.toast.showShortBottom('信息列表加签名出错！');
-        });
+        infoListView.getStore().getProxy().setExtraParams(here.util.PostUtil.getRestApiParams(params));
+        infoListView.getStore().load();
     },
     loadInfoListFail : function(infoListProxy, response, operation, eOpts ){
         Ext.toast(
@@ -74,11 +67,9 @@ Ext.define('here.controller.home.LatestViewController', {
     },
     showInfoDetail : function( dataItem, index, target, record, e, eOpts ){
         var infoDetail = Ext.widget("infoDetail");
-        infoDetail.getStore().getProxy().setExtraParams(
-            {
+        infoDetail.getStore().getProxy().setExtraParams(here.util.PostUtil.getRestApiParams({
                 contentId : record.data.id
-            }
-        );
+        }));
         infoDetail.getStore().load();
         this.getMainView().push(infoDetail);
     },

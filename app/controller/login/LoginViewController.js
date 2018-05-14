@@ -1,3 +1,6 @@
+/**
+ * 用户登录控制器
+ */
 Ext.define('here.controller.login.LoginViewController', {
     extend: 'Ext.app.Controller',
     requires : ['here.util.EncryptUtil','here.util.PostUtil'],

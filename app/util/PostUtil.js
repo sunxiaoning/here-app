@@ -15,6 +15,9 @@ Ext.define('here.util.PostUtil', {
         if(!params['timestamp']){
             params['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
         }
+        if(!params['token']){
+            params['token'] = SYSTEM_CONFIG.TOKEN;
+        }
         Ext.Ajax.request({
             url: [SYSTEM_CONFIG.SERVER_URL,url].join(""),
             useDefaultXhrHeader: false,
@@ -84,5 +87,19 @@ Ext.define('here.util.PostUtil', {
         me.sign(params,function (signResultParams) {
             me.post(url,signResultParams,callback,failure);
         },failure);
+    },
+
+    /**
+     * 原始请求参数
+     * @param params
+     * @returns {*}
+     */
+    getRestApiParams : function(params){
+        if(!params){
+            params = {};
+        }
+        params['timestamp'] = Ext.Date.format(new Date(),'Y-m-d H:i:s');
+        params['token'] = SYSTEM_CONFIG.TOKEN;
+        return params;
     }
 });
